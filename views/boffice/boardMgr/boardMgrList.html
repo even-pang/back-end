@@ -1,0 +1,89 @@
+{% extends 'boffice/include/layout.html' %}
+
+{% block content %}
+    <script>
+        const URLSearch = new URLSearchParams(location.search);
+        if(URLSearch.has('error')) {
+            alert(URLSearch.get('error'));
+            history.replaceState({}, null, location.pathname);
+        }
+
+        function fWrite()
+        {
+            vObj = document.frmWrite;  
+            vObj.action = "/boffice/boardmgr/boardMgrWrite";
+            
+            vObj.submit();
+        }   
+        function fModify(brdMgrno)
+        {
+            vObj = document.frmWrite;   
+            vObj.brd_mgrno.value = brdMgrno; 
+            vObj.action = "/boffice/boardmgr/boardMgrWrite";
+            
+            vObj.submit();
+        }
+    </script>
+
+    <div class="body">
+        <div class="board_list_top">
+            <div class="board_list_info">
+                전체 <span id="totalCount">{{count}}</span>개, 현재 페이지 
+                <span id="totalCount">1</span>/2
+            </div>
+        </div>
+        <form  autocomplete="off" name="frmWrite"      method="post" action="">
+            <input name="keykind"     type="hidden" value="{{keykind}}"/>
+            <input name="keyword"     type="hidden" value="{{keyword}}"/>
+            <input name="page_now"    type="hidden" value="{{page_no}}"/>
+            <input name="returl"      type="hidden" value="{{returl}}"/>
+            <input name="param"       type="hidden" value="{{param}}"/>
+            <input name="brd_mgrno"   type="hidden" value=""/>
+            <input name="menu_no"     type="hidden" value="{{menu_no}}"/>
+        </form>
+        <table class="board_list_normal">
+            <colgroup>
+                <col width="5%" />
+                <col width="10%" />
+                <col width="10%" />                   
+                <col width="*%" />  
+                <col width="15%" />                     	
+                <col width="8%" />
+                <col width="10%" />
+                <col width="10%" />
+            </colgroup>    	
+            <thead>
+                <tr>
+                    <th scope="col">번호</th>
+                    <th scope="col">유형</th>
+                    <th scope="col">게시판번호</th>
+                    <th scope="col">게시판명</th>
+                    <th scope="col">사이트명</th>
+                    <th scope="col">사용여부</th>
+                    <th scope="col">등록일</th>                      
+                    <th scope="col">게시물건수</th>                      				    
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in list%}
+                <tr>
+                    <td class="center">{{count - loop.index - ((querys.page_now if querys.page_now != null else 1)-1)*10 + 1}}</td>
+                    <td class="center">{{item.brd_skin_cd}}</td>
+                    <td class="center">{{item.brd_mgrno}}</td>
+                    <td class="textLeft"><a href="javascript:fModify('{{item.brd_mgrno}}')">{{item.brd_nm}}</a></td>
+                    <td class="center">{{item.brd_snm}}</td>
+                    <td class="center w_show">{{item.use_yn}}</td>
+                    <td class="center w_show">{{item.reg_dt}}</td>                                
+                    <td class="center">{{item.brd_reg_cnt}}</td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+        <div class="pagination">
+            {{paging|safe}}
+        </div>
+        <div class="board_list_btn right">
+            <input type="button" class="btn blue" value="게시물 등록" onclick='fWrite();'>
+        </div>
+    </div>
+{% endblock %}

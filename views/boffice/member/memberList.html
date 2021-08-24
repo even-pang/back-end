@@ -1,0 +1,74 @@
+{% extends 'boffice/include/layout.html' %}
+
+{% block content %}
+    <script>
+         function fModify(strUserId)
+   {
+	  vObj = document.frmWrite;   
+	  vObj.user_id.value = strUserId; 
+	  vObj.action = "/boffice/member/memberWrite";
+	  
+	  vObj.submit();
+   }
+   /*var st_date = new Date().toISOString().substr(0, 10).replace('T', ' ');
+   alert(st_date);*/
+    </script>
+    <form  autocomplete="off" name="frmWrite" method="post" action="">
+        <input name="page_now"  type="hidden" value="{{querys.page_now}}"/>
+        <input name="returl"    type="hidden" value="{{returl}}"/>
+        <input name="param"     type="hidden" value="{{param}}"/>
+        <input name="user_id"   type="hidden" value=""/>
+    </form> 
+    <div class="body">
+        <div class="board_list_top">
+        </div>
+        <table class="board_list_normal">
+            <colgroup>
+                <col width="7%">
+                <col width="13%">
+                <col width="10%">
+                <col width="12%">
+                <col width="10%">
+                <col width="12%">
+                <col width="13%">
+                <col width="13%">
+                <col width="10%">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>ID</th>
+                    <th>이름</th>
+                    <th>전화번호</th>
+                    <th>성별</th>
+                    <th>회원타입</th>
+                    <th>닉네임</th>
+                    <th>장르</th>
+                    <th>가입날짜</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in list%}
+                <tr>
+                    <td class="num">{{count - loop.index - ((querys.page_now if querys.page_now != null else 1)-1)*10 + 1}}</td>
+                    <td class="center postTitle" style="cursor:pointer"><a onclick='fModify("{{item.user_id}}");'>{{item.user_id}}</a></td>
+                    <td class="center">{{item.user_nm}}</td>
+                    <td class="center">{{item.telno}}</td>
+                    {% if item.gender == 'M' %}
+                    <td class="center">남자</td>
+                    {% else %}
+                    <td class="center">여자</td>
+                    {% endif %}
+                    <td class="center">{{item.user_type}}</td>
+                    <td class="center">{{item.nick_nm}}</td>
+                    <td class="center">{{item.wanna_genre}}</td>
+                    <td class="center">{{item.reg_dt}}</td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+        <div class="pagination">
+            {{paging|safe}}
+        </div>
+    </div>
+{% endblock %}

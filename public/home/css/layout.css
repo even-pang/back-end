@@ -1,0 +1,137 @@
+/* header start */
+.headerTop {
+    text-align: right;
+    margin: 15px auto;
+}
+.headerTop a{
+    font-size: 15px;
+    color: #ff702b;
+    font-family: 'Montserrat-Regular', 'NotoSansKR-Regular', sans-serif;
+}
+.headerTop div.bar {
+    height: 15px;
+    width: 1px;
+    background-color: #4d4d4d;
+    display: inline-block;
+    margin: 0 5px;
+    position: relative;
+    top: 2px;
+}
+header .logo {
+    float: left;
+}
+header .logo img{
+    width: 120px;
+    
+}
+.mainMenu {
+    display: flex;
+    float: left;
+    width: 70%;
+    position: relative;
+    top: 13px;
+}
+.mainMenu > div {
+    flex: 1;
+    text-align: center;
+    padding: 28px 0px;
+    margin-top: -27px;
+    cursor: pointer;
+}
+.mainMenu > div a{
+    font-size: 18px;
+}
+.mainMenu > div a.on{
+    color: #ff702b;
+    font-weight: bold;
+}
+
+.mainMenu > div:hover a, .mainMenu > div a:hover{
+    color: #ff702b;
+    font-weight: bold;
+    transition: 0.2s all;
+}
+.headerSch {
+    position: relative;
+    overflow: hidden;
+}
+.headerSch a{
+    background-image: url(../img/icon/ic-search.png);
+    display: inline-block;
+    background-repeat: no-repeat;
+    width: 18px;
+    height: 18px;
+    background-size: 100% auto;
+    background-position: center;
+    position: absolute;
+    top: 6px;
+}
+.headerSch .schIpt{
+    border-bottom: 2px solid #ededed;
+    padding-left: 24px;
+    width: 100%;
+}
+.headerWrap {
+    position: relative;
+}
+.subMenu{
+    display: none;
+    width: 100%;
+    height: 70px;
+    position: absolute;
+    z-index: 99999;
+    background-color: rgba(0,0,0,0.6);
+    top: 99px;
+    text-align: center;
+}
+.subMenu > ul {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.subMenu > ul li{
+    padding: 0 20px;
+    display: inline-block;
+}
+.subMenu > ul li a{
+    font-size: 18px;
+}
+.sidebar_menu .headerSch { margin-top: 30px; }
+
+
+/* header end */
+
+/* footer start */
+footer{
+    width: 1280px;
+    margin: 200px auto 0;
+    border-top: 1px solid #4d4d4d;
+    padding: 20px 0 90px;
+    clear: both;
+}
+footer ul li {
+    float: left;
+}
+footer ul li a{
+    display: inline-block;
+    padding: 0 10px;
+    position: relative;
+}
+footer ul li:first-child a{padding-left: 0;}
+
+footer ul li:not(:last-child) a::after{
+    content: '';
+    position: absolute;
+    right: 0;
+    width: 1px;
+    height: 12px;
+    background-color: #7e7e7e;
+    top: 4px;
+}
+footer div{
+    clear: both;
+    color: #cccccca6;
+    margin-top: 30px;
+    line-height: 29px;
+}
+/* footer end */

@@ -1,0 +1,32 @@
+{% include "./header.html" ignore missing %}
+<!-- main -->
+	<div id="main">
+		<div class="group">
+			<div class="header"><h3>{{title}}</h3></div>
+			{% block content %}
+            {% endblock %}
+		</div>
+	</div>
+	<!-- /main -->
+    <script>
+        $(document).ready(function(){
+            $(".schField").hide();
+            if($("#sch_gubun").val() == "titCon") $(".txtSchField").show();
+            else if($("#sch_gubun").val() == "rgDate") $(".dateSchField").show();
+            $("#sch_gubun").change(function(){
+                $(".schField").hide();
+                if($(this).val() == "titCon") $(".txtSchField").show();
+                else if($(this).val() == "rgDate") $(".dateSchField").show();
+            })
+        });
+        function reset(){
+            $("#sch_gubun option:first").attr("selected", "selected");
+            $(".schField").hide();
+            $(".txtSchField").show();
+            $(".schIpt").each(function(){
+                $(this).val('');
+            })
+        }
+    </script>
+</body>
+</html>

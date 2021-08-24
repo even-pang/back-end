@@ -1,0 +1,198 @@
+{% extends 'boffice/include/layout.html' %}
+
+{% block content %}
+    <script>
+        function fWrite()
+        {
+            vObj = document.frmWrite;   
+            
+            vObj.brd_no.value = '';
+            vObj.action = "/boffice/board/boardWrite";
+            
+            vObj.submit();
+        }   
+        function fModify(strMgrno)
+        {
+            vObj = document.frmWrite;   
+            
+            vObj.brd_no.value = strMgrno; 
+
+            vObj.action = "/boffice/board/boardWrite";
+            
+            vObj.submit();
+        }
+        
+        function fView(strMgrno)
+        {
+            vObj = document.frmWrite;   
+            
+            vObj.brd_no.value = strMgrno; 
+
+            vObj.action = "/boffice/board/boardView";
+            
+            vObj.submit();
+        }
+        
+        function fAllDelete()
+        {
+            vObj = document.frmList;
+            if ( checkRadioCount(vObj.chk_brd_no) == 0 )
+            {
+                alert("Select data to delete.");
+                return;
+            }
+            
+            if (!confirm("선택하신 데이터를 삭제하시겠습니까?"))
+                return;
+
+            $.ajax(
+                {
+                    url:'/boffice/board/boardWork',
+                    type:'DELETE',
+                    cache:false,
+                    data:$("form[name='frmList']").serialize(),
+                    dataType:'text',
+                    success:function(data) {
+                        alert('삭제되었습니다');
+                        location.reload();
+                    },
+                    error:(err) => {
+                        console.log(err);
+                    }
+                }	
+            );
+        }
+
+    </script>
+
+    <div class="body">
+        <div class="board_list_top">
+            <div class="board_search_wrap">
+                <div class="ipt_group">
+                    <p class="sch_text w_show">검색구분 : </p>
+                    <select id="sch_gubun" name="sch_gubun" class="ipt" title="sns" style="width: 150px;">
+                        <option value="titCon" >제목 + 내용</option>
+                        <option value="rgDate" >작성일자</option>
+                    </select>
+                    <div class="txtSchField schField">
+                        <input type="text" id="search" name="search" value="" class="ipt schIpt" placeholder="검색어를 입력하세요" style="width: 30%;" onKeyDown="if(event.keyCode==13) go_search();">
+                    </div>
+                    <div class="dateSchField schField" style="display: none;">
+                        <div style="width: 100%; clear:both;" class="m_show"></div>
+                        <div class="dataSearch" style="margin-left: 15px;">
+                            <div class="ipt_group datepicker">
+                                <input type="text" id="sch_start_date" name="sch_start_date" class="ipt schIpt dataIpt" placeholder="시작일" style="width: 230px;"> 
+                                <label for="sch_start_date" class="btn square trans"><i class="k-icon k-i-calendar"></i></label>
+                            </div>
+                        </div>
+                        <p class="sch_text w_show" style="margin-left: 15px;"> ~ </p>
+                        <div class="dataSearch">
+                            <div class="ipt_group datepicker">
+                                <input type="text" id="sch_end_date" name="sch_end_date" class="ipt schIpt dataIpt" value="" placeholder="종료일" style="width: 230px;">
+                                <label for="sch_end_date" class="btn square trans"><i class="k-icon k-i-calendar"></i></label>
+                            </div>
+                        </div>
+                    </div>      
+                    <div class="sch_btn_wrap">
+                        <span class="ipt_right addon">
+                            <a href="#" class="btn blue">검색</a>
+                            <a href="#" class="btn gray">초기화</a>
+                        </span>
+                    </div>
+                </div> 
+            </div>
+            <div class="board_list_info">
+                {%if querys.page_now != null%}
+                    {% set page_now = querys.page_now%}
+                {%else%}
+                    {% set page_now = 1%}
+                {%endif%}
+                전체 <span id="totalCount">{{count}}</span>개, 현재 페이지 
+                <span id="totalCount">{{page_now}}</span>/{{count//10 + (1 if count%10 else 0)}}
+            </div>
+        </div>
+        <form  autocomplete="off" name="frmWrite" method="post" action="/boffice/board/boardWrite">
+            <input name="keykind"     type="hidden" value="{{querys.keykind}}">
+            <input name="keyword"     type="hidden" value="{{querys.keyword}}">
+            <input name="brd_mgrno"   type="hidden" value="{{boardmgrDetail.brd_mgrno}}">
+            <input name="brd_no"      type="hidden" value="">
+            <input name="menu_no"     type="hidden" value="{{menu_no}}">
+            <input name="page_now"    type="hidden" value="{{querys.page_now}}"/>
+            <input name="returl"      type="hidden" value="{{returl}}"/>
+            <input name="param"       type="hidden" value="{{param}}"/>
+        </form>    	
+        <form  autocomplete="off" name="frmList"      method="post" action="/boffice/boardDelete.do"> 
+            <table class="board_list_normal">
+                <colgroup>
+                    <col width="7%" />
+                    <col width="5%" />
+                    {%if ("Y" == boardmgrDetail.cate_cd_use_yn) %} 
+                    <col width="15%" />                 
+                    {%endif%}           
+                    <col width="10%" />
+                    <col width="10%" />	
+                    <col width="*%" />     
+                    <col width="9%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                    {%if ( "Y" == boardmgrDetail.term_use_yn) %}
+                    <col width="17%" />
+                    {%endif%}			  
+                    {%if ( "Y" == boardmgrDetail.ord_use_yn) %}
+                    <col width="10%" />
+                    {%endif%}
+                </colgroup>    	
+                <thead>
+                    <tr>
+                        <th scope="col"><input name="all_brd_no"  type="checkbox" onclick="checkRadioToggle(document.frmList, this.checked)"/>선택</th>
+                        <th scope="col">번호</th>
+                        {%if ("Y" == boardmgrDetail.cate_cd_use_yn) %} 
+                        <th scope="col">{{boardmgrDetail.cate_cd_title}}</th>                 
+                        {%endif%}
+                        <th scope="col">아이디</th>
+                        <th scope="col">이름</th>
+                        <th scope="col">제목</th>
+                        <th scope="col">등록일</th>                      
+                        <th scope="col">조회건수</th>  
+                        {%if ( "Y" == boardmgrDetail.term_use_yn) %}
+                        <th scope="col">기간</th>
+                        {%endif%}
+                        {%if ( "Y" == boardmgrDetail.ord_use_yn) %}
+                        <th scope="col">정렬</th>  
+                        {%endif%}                    
+                                                            
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in list%}
+                    <tr>
+                        <td class='center'><input name="chk_brd_no" value="{{item.brd_no}}" type="checkbox"/></td>
+                        <td class='center'>{{count - loop.index - ((querys.page_now if querys.page_now != null else 1)-1)*10 + 1}}</td>
+                        {%if ("Y" == boardmgrDetail.cate_cd_use_yn) %} 
+                        <td class='center'>{{item.cate_nm}}</td>               
+                        {%endif%}             
+                        <td class='center'>{{item.reg_id}}</td>
+                        <td class='center'>{{item.reg_nm}}</td>               	
+                        <td class="textLeft"><a href="javascript:fView('{{item.brd_no}}')">{{item.ttl}}</a></td>
+                        <td class='center'>{{item.reg_dt}}</td>                                
+                        <td class='center'>{{item.view_cnt}}</td>
+                        {%if ( "Y" == boardmgrDetail.term_use_yn) %}
+                        <td class='center'>{{item.sdt}}~{{item.edt}}</td> 
+                        {%endif%}	       
+                        {%if ( "Y" == boardmgrDetail.ord_use_yn) %}
+                        <td class='center'>{{item.ord}}</td>
+                        {%endif%}       
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </form>
+        <div class="pagination">
+            {{paging|safe}}
+        </div>
+        <div class="board_list_btn right">
+            <input type="button" onclick="fWrite()" class="btn blue" value="글쓰기">
+            <input type="button" onclick='fAllDelete()' class="btn blue" value="삭제">
+        </div>
+    </div>
+{% endblock %}

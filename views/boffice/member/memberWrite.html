@@ -1,0 +1,95 @@
+{% extends 'boffice/include/layout.html' %}
+
+{% block content %}
+    <script>
+        function fSubmit()
+        {
+            vObj = document.frmInput;   
+            if (!confirm("저장하시겠습니까?")) return;
+            var targetUrl = "/boffice/member/memberWork";
+            let type = 'POST';
+            if('{{iflag}}' == 'UPDATE') type = 'PATCH';
+
+            $.ajax(
+                {
+                    url:targetUrl,
+                    type: type,
+                    cache:false,
+                    data:$("form[name='frmInput']").serialize(),
+                    dataType:'text',
+                    success:function(data) {
+                        alert('저장되었습니다');
+                        location.href='{{returl}}?{{querys | safe}}';
+                    },
+                    error:(err) => {
+                        console.log(err);
+                    }
+                }	
+            );
+        }   
+
+    </script>
+
+    <div class="body">
+        <form  autocomplete="off" name="frmInput" method="post" enctype="multipart/form-data" >
+            <input name="iflag"           type="hidden" value="{{iflag | default(iflag, 'INSERT', true)}}">         
+            <input name="returl"          type="hidden" value="{{returl}}">
+            <input name="param"           type="hidden" value="{{querys}}">			
+    
+            <table class="board_list_normal">
+                <colgroup>
+                    <col width="20%">
+                    <col width="80%">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th >id</th>
+                        <td ><input type="text" style="width:700px" name="user_id" class="input-text" value="{{detail.user_id}}" maxlength="50"/></td>
+                    </tr>
+                    <tr>
+                        <th >pwd</th>
+                        <td ><input type="password" style="width:700px" name="pwd" class="input-text"   maxlength="50"/></td>
+                    </tr>
+                    <tr>
+                        <th >닉네임</th>
+                            <td ><input type="text" style="width:700px" name="nick_nm" class="input-text" value="{{detail.nick_nm}}" maxlength="50"/></td>
+                    </tr>
+                    <tr>
+                        <th >전화번호</th>
+                            <td ><input type="text" style="width:700px" name="telno" class="input-text" value="{{detail.telno}}" maxlength="50"/></td>
+                    </tr>
+
+                     <tr>
+                        <th >성별</th>
+                            <td >
+                                <input type="radio"  name="gender_mw" class="input-text" value="M" id="gender_m" {%if detail.gender == 'M'%}checked{%endif%}/><label for="gender_m">남자</label>
+                                <input type="radio"  name="gender_mw" class="input-text" value="W" id="gender_w" {%if detail.gender == 'W'%}checked{%endif%}/><label for="gender_w">여자</label>
+                            </td>
+                    </tr>
+                    <tr>
+                        <th >회원타입</th>
+                            <td ><input type="text" style="width:700px" name="user_type" class="input-text" value="{{detail.user_type}}" maxlength="50"/></td>
+                    </tr> 
+
+                    <tr>
+                        <th >사용여부</th>
+                        <td >
+                            <input type="radio"  name="use_yn" class="input-text" value="Y" id="use_yn_y" {%if detail.use_yn == 'Y'%}checked{%endif%}/><label for="use_yn_y">사용</label>
+                            <input type="radio"  name="use_yn" class="input-text" value="N" id="use_yn_N" {%if detail.use_yn == 'N'%}checked{%endif%}/><label for="use_yn_N">사용하지 않음</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>수정일자</th>
+                        <td>
+                            {{detail.mod_dt}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+        <div class="board_list_btn">
+            <input type="button" class="btn blue" value="이전" onclick='history.back()'>
+            <input type="button" class="btn blue" value="저장"onclick='fSubmit()'>
+        </div>
+    </div>
+{% endblock %}

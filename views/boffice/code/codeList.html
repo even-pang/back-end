@@ -1,0 +1,68 @@
+{% extends 'boffice/include/layout.html' %}
+
+{% block content %}
+    <script>
+        function fWrite(strUpMenuId)
+        {
+            vObj = document.frmWrite;  
+            vObj.up_menu_no.value = strUpMenuId;
+            vObj.action = "/boffice/code/codeWrite";
+            
+            vObj.submit();
+        }   
+    </script>
+
+    <div class="body">
+        <div class="board_list_top">
+        </div>
+        <form  autocomplete="off" name="frmWrite" method="post" action="/boffice/code/codeWrite">
+            <input name="cd_type"   type="hidden" value="{{querys.cd_type}}"/>
+            <input name="returl"    type="hidden" value="{{returl}}"/>
+            <input name="param"     type="hidden" value="{{param}}"/>
+            <input name="menu_no"   type="hidden" value=""/>
+        </form>    	
+        <table class="board_list_normal">
+            <colgroup>
+                <col width="7%">
+                <col width="7%">
+                <col width="11%">
+                <col width="60%">
+                <col width="7%">
+                {%if querys.cd_type == undefined%}
+                <col class="w_show" width="8%">
+                {%endif%}
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>대분류</th>
+                    <th>코드</th>
+                    <th>코드명</th>
+                    <th class="w_show">순서</th>
+                    {%if querys.cd_type == undefined%}
+                    <th class="w_show">관리</th>
+                    {%endif%}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in list%}
+                <tr>
+                    <td class="num">{{loop.index}}</td>
+                    <td class="center postTitle" style="cursor:pointer"><a href="javascript: void(0)" class="link"></a>{{item.cd_type}}</a></td>
+                    <td class="center">{{item.comm_cd}}</td>
+                    <td class="center">{{item.cd_nm}}</td>
+                    <td class="center w_show">{{item.ord}}</td>
+                    {%if querys.cd_type == undefined%}
+                    <td class="center state w_show">
+                        <span style="cursor: pointer;" class="active" onclick="location.href='{{returl}}?menu_no={{querys.menu_no}}&cd_type={{item.cd_type}}'">하위코드</span>
+                    </td>
+                    {%endif%}
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+        <div class="board_list_btn right">
+            <input type="button" class="btn blue" value="코드 등록" onclick='fWrite("{{querys.up_menu_no}}");'>
+        </div>
+    </div>
+{% endblock %}

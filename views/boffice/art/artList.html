@@ -1,0 +1,156 @@
+{% extends 'boffice/include/layout.html' %}
+
+{% block content %}
+<script>
+    function fn_resizeRcmPstSize(win_width){
+        $(".w_scroll").show();
+        $(".m_scroll").hide();
+        if(win_width >= 1280){
+            $(".rcm_pst_wrap .rcm_pst").css("width", "396px").css("height", "374px");
+            $(".rcm_pst_wrap .shadow").css("width", "396px").css("height", "374px");
+            $(".rcm_pst_wrap .imgWrap").css("height", "246px");
+            $(".artList > div").css("height", "auto");
+            $(".rcm_pst_wrap .shadow").show();
+        } else{
+            var w = $(".rcm_pst_wrap").outerWidth();
+            var w2 = $(".artList > div").outerWidth();
+            $(".artList > div").css("height", w2 * 1.2062 + "px");
+
+            var div_w = 0, div_ratio = 0, img_ratio = 0;
+            if (win_width < 767) {
+                div_w = (w / 2) - 2.5;
+                div_ratio = 1.159;
+                img_ratio = 1.52;
+                $(".rcm_pst_wrap .shadow").hide();
+                $(".m_scroll").show();
+                $(".w_scroll").hide();
+            } else if (win_width < 1024) {
+                div_w = (w / 3) - 12;
+                div_ratio = 1.159;
+                img_ratio = 1.52;
+                $(".rcm_pst_wrap .shadow").hide();
+            } else if (win_width < 1280){
+                div_w = (w / 3) - 36;
+                div_ratio = 0.9444;
+                img_ratio = 1.52;
+                $(".rcm_pst_wrap .shadow").show();
+            }
+
+            $(".rcm_pst_wrap .rcm_pst").css("width", div_w + "px").css("height", (div_w * div_ratio) + "px");
+            $(".rcm_pst_wrap .shadow").css("width", div_w + "px").css("height", (div_w * div_ratio) + "px");
+            $(".rcm_pst_wrap .imgWrap").css("height", ($(".rcm_pst_wrap .shadow").outerHeight() / img_ratio) + "px");
+        }
+    }
+
+    function fWrite()
+        {
+            vObj = document.frmWrite;   
+            
+            vObj.art_no.value = '';
+            vObj.action = "/boffice/art/artWrite";
+            
+            vObj.submit();
+        }   
+        function fModify(strMgrno)
+        {
+            vObj = document.frmWrite;   
+            
+            vObj.art_no.value = strMgrno; 
+
+            vObj.action = "/boffice/art/artWrite";
+            
+            vObj.submit();
+        }
+        
+        function fView(strMgrno)
+        {
+            vObj = document.frmWrite;   
+            
+            vObj.art_no.value = strMgrno; 
+
+            vObj.action = "/boffice/art/artView";
+            
+            vObj.submit();
+        }
+</script>
+<style>
+    .artList > div p {
+    color: #666;
+    }
+</style>
+
+	<!-- main -->
+	<div id="main">
+		<div class="group">
+			<div class="header"><h3>메뉴명</h3></div>
+			<div class="body">
+				<div class="board_list_top">
+					<div class="board_search_wrap">
+	                    <div class="ipt_group">
+	                    	<p class="sch_text w_show">검색구분 : </p>
+	                    	<select id="sch_gubun" name="sch_gubun" class="ipt" title="sns" style="width: 150px;">
+	                    		<option value="titCon" >제목 + 내용</option>
+	                    		<option value="rgDate" >작성일자</option>
+	                    	</select>
+	                    	<div class="txtSchField schField">
+	                        	<input type="text" id="search" name="search" value="" class="ipt schIpt" placeholder="검색어를 입력하세요" style="width: 30%;" onKeyDown="if(event.keyCode==13) go_search();">
+							</div>
+                            <div class="dateSchField schField" style="display: none;">
+                                <div style="width: 100%; clear:both;" class="m_show"></div>
+								<div class="dataSearch" style="margin-left: 15px;">
+	                    			<div class="ipt_group datepicker">
+			                    		<input type="text" id="sch_start_date" name="sch_start_date" class="ipt schIpt dataIpt" placeholder="시작일" style="width: 230px;"> 
+		                                <label for="sch_start_date" class="btn square trans"><i class="k-icon k-i-calendar"></i></label>
+	                                </div>
+                                </div>
+	                    		<p class="sch_text w_show" style="margin-left: 15px;"> ~ </p>
+	                    		<div class="dataSearch">
+	                    			<div class="ipt_group datepicker">
+			                    		<input type="text" id="sch_end_date" name="sch_end_date" class="ipt schIpt dataIpt" value="" placeholder="종료일" style="width: 230px;">
+			                    		<label for="sch_end_date" class="btn square trans"><i class="k-icon k-i-calendar"></i></label>
+			                    	</div>
+	                    		</div>
+							</div>      
+	                        <div class="sch_btn_wrap">
+	                        	<span class="ipt_right addon">
+	                        		<a href="#" class="btn blue">검색</a>
+	                        		<a href="#" class="btn gray">초기화</a>
+	                        	</span>
+	                        </div>
+	                    </div> 
+					</div>
+	                <div class="board_list_info">
+		                전체 <span id="totalCount">11</span>개, 현재 페이지 
+	                    <span id="totalCount">1</span>/2
+	                </div>
+	            </div>
+                
+                <form  autocomplete="off" name="frmWrite" method="post" action="/boffice/art/artWrite">
+                    <input name="art_no"      type="hidden" value="">
+                    <input name="menu_no"     type="hidden" value="{{menu_no}}">
+                    <input name="page_now"    type="hidden" value="{{querys.page_now}}"/>
+                    <input name="returl"      type="hidden" value="{{returl}}"/>
+                    <input name="param"       type="hidden" value="{{param}}"/>
+                </form>    
+	            <div class="artListWrap">
+                    <div class="artList">
+                        {% for item in list%}
+                        <div>
+                            <a href="javascript:fView('{{item.art_no}}')">
+                                <div class="imgWrap"><img src="{{item.Files[0].file_realnm}}"></div>
+                                <p class="en bold">{{item.ttl}}</p>
+                                <p>{{item.Customer.address}}</p>
+                                <p>{{item.Customer.genre}}</p>
+                            </a>
+                        </div>
+                        {%endfor%}
+                    </div>
+                    <div class="pagination">
+                        {{paging|safe}}
+                    </div>
+                </div>
+			</div>
+		</div>
+	</div>
+	<!-- /main -->
+    {% endblock %}

@@ -1,0 +1,113 @@
+{% extends 'boffice/include/layout.html' %}
+
+{% block content %}
+    <script>
+        function fSubmit()
+        {
+            vObj = document.frmInput;   
+            if (!confirm("저장하시겠습니까?")) return;
+            var targetUrl = "/boffice/menu/menuWork";
+            let type = 'POST';
+            if('{{iflag}}' == 'UPDATE') type = 'PATCH';
+
+            $.ajax(
+                {
+                    url:targetUrl,
+                    type: type,
+                    cache:false,
+                    data:$("form[name='frmInput']").serialize(),
+                    dataType:'text',
+                    success:function(data) {
+                        alert('저장되었습니다');
+                        location.href='{{returl}}?{{param | safe}}';
+                    },
+                    error:(err) => {
+                        console.log(err);
+                    }
+                }	
+            );
+        }   
+
+        $(function() {
+            //$("input[name='use_yn'][value=" + '{{detail.use_yn}}' + "]").attr("checked", true);
+            //console.log('{{detail.use_yn}}');
+            //$("select[name='brd_mgrno']").val('{{detail.brd_mgrno}}').attr("selected", "selected");
+            //$("select[name='url_target']").val('{{detail.url_target}}').attr("selected", "selected");
+        });
+    </script>
+
+    <div class="body">
+        <form  autocomplete="off" name="frmInput" method="post" enctype="multipart/form-data" action="/boffice/menu/menuWork">
+            <input name="iflag"           type="hidden" value="{{iflag | default(iflag, 'INSERT', true)}}">
+            <input name="menu_no"         type="hidden" value="{{detail.menu_no}}">
+            <input name="up_menu_no"      type="hidden" value="{{querys.up_menu_no}}">		            
+            <input name="parent_menu_no"  type="hidden" value="{{querys.parent_menu_no}}">
+            <input name="menu_gb"         type="hidden" value="{{querys.menu_gb}}">		            
+            <input name="returl"          type="hidden" value="{{returl}}">
+            <input name="param"           type="hidden" value="{{param}}">			
+    
+            <table class="board_list_normal">
+                <colgroup>
+                    <col width="10%">
+                    <col width="90%">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th >메뉴명</th>
+                        <td ><input type="text" style="width:700px" name="menu_nm" class="input-text" value="{{detail.menu_nm}}" maxlength="50"/></td>
+                    </tr>
+                    <tr>
+                        <th >메뉴 URL</th>
+                        <td ><input type="text" style="width:700px" name="menu_url" class="input-text" value="{{detail.menu_url}}"  maxlength="250"/></td>
+                    </tr>
+
+                    <tr>
+                        <th >메뉴 Target</th>
+                        <td >
+                            <select name="url_target" class="input-text">
+                                <option value="">선택하세요</option>
+                                <option value="_self" {%if detail.url_target == '_self'%}selected{%endif%}>_Self</option>
+                                <option value="_blank" {%if detail.url_target == '_blank'%}selected{%endif%}>새창으로</option>
+                            </select>	
+                        </td>
+                    </tr>
+
+                     <tr>
+                        <th >게시판 번호</th>
+                        <td >
+                           <select name="brd_mgrno" class="input-text">
+                                <option value="">선택하세요</option>
+                                {% for item in boardMgrList %}
+                                    <option value="{{item.brd_mgrno}}" {%if detail.brd_mgrno == item.brd_mgrno%}selected{%endif%}>{{item.brd_nm}}</option>
+                                {% endfor %}
+                           </select>	
+                        </td>
+                    </tr>
+                    <tr>
+                        <th >메뉴설명</th>
+                        <td  colspan="3">
+                            <textarea id="menu_desc" name="menu_desc" maxlength="65536" style="width:100%;height:300px" class='ckeditor'>{{detail.menu_desc | safe}}</textarea> 
+                        </td>
+                    </tr> 
+
+                    <tr>
+                        <th >사용여부</th>
+                        <td >
+                            <input type="radio"  name="use_yn" class="input-text" value="Y" id="use_yn_y" {%if detail.use_yn == 'Y'%}checked{%endif%}/><label for="use_yn_y">사용</label>
+                            <input type="radio"  name="use_yn" class="input-text" value="N" id="use_yn_N" {%if detail.use_yn == 'N'%}checked{%endif%}/><label for="use_yn_N">사용하지 않음</label>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <th >순서</th>
+                        <td ><input type="text"  name="ord" style="width:50px;IME-MODE:disabled;" class="input-text"  value="{{detail.ord}}" maxlength="5"/></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+        <div class="board_list_btn">
+            <input type="button" class="btn blue" value="이전" onclick='history.back()'>
+            <input type="button" class="btn blue" value="저장"onclick='fSubmit()'>
+        </div>
+    </div>
+{% endblock %}

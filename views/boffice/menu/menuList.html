@@ -1,0 +1,154 @@
+{% extends 'boffice/include/layout.html' %}
+
+{% block content %}
+    <script>
+        const URLSearch = new URLSearchParams(location.search);
+        if(URLSearch.has('error')) {
+            alert(URLSearch.get('error'));
+            history.replaceState({}, null, location.pathname);
+        }
+
+        function fWrite(strUpMenuId)
+        {
+            vObj = document.frmWrite;  
+            vObj.up_menu_no.value = strUpMenuId;
+            vObj.action = "/boffice/menu/menuWrite";
+            
+            vObj.submit();
+        }   
+        function fModify(strMenuId, strUpMenuId)
+        {
+            vObj = document.frmWrite;   
+            vObj.menu_no.value = strMenuId; 
+            vObj.up_menu_no.value = strUpMenuId;
+            vObj.action = "/boffice/menu/menuWrite";
+            
+            vObj.submit();
+        }
+        
+        function fDelete(strMenuId, strUpMenuId)
+        {
+            vObj = document.frmWrite;   
+            if (!confirm("삭제하시겠습니까?")) return;
+            var targetUrl = "/boffice/menu/menuWork";
+            vObj.menu_no.value = strMenuId; 
+            vObj.up_menu_no.value = strUpMenuId;
+
+            $.ajax(
+                {
+                    url:targetUrl,
+                    type:'DELETE',
+                    cache:false,
+                    data:$("form[name='frmWrite']").serialize(),
+                    dataType:'text',
+                    success:function(data) {
+                        alert('삭제되었습니다');
+                        location.reload();
+                    },
+                    error:(err) => {
+                        console.log(err);
+                    }
+                }	
+            );
+        }   
+    </script>
+
+    <div class="body">
+        <div class="board_list_top">
+            <div class="board_search_wrap">
+                <div class="ipt_group">
+                    <p class="sch_text w_show">검색구분 : </p>
+                    <select id="sch_gubun" name="sch_gubun" class="ipt" title="sns" style="width: 150px;">
+                        <option value="titCon" >제목 + 내용</option>
+                        <option value="rgDate" >작성일자</option>
+                    </select>
+                    <div class="txtSchField schField">
+                        <input type="text" id="search" name="search" value="" class="ipt schIpt" placeholder="검색어를 입력하세요" style="width: 30%;" onKeyDown="if(event.keyCode==13) go_search();">
+                    </div>
+                    <div class="dateSchField schField" style="display: none;">
+                        <div style="width: 100%; clear:both;" class="m_show"></div>
+                        <div class="dataSearch" style="margin-left: 15px;">
+                            <div class="ipt_group datepicker">
+                                <input type="text" id="sch_start_date" name="sch_start_date" class="ipt schIpt dataIpt" placeholder="시작일" style="width: 230px;"> 
+                                <label for="sch_start_date" class="btn square trans"><i class="k-icon k-i-calendar"></i></label>
+                            </div>
+                        </div>
+                        <p class="sch_text w_show" style="margin-left: 15px;"> ~ </p>
+                        <div class="dataSearch">
+                            <div class="ipt_group datepicker">
+                                <input type="text" id="sch_end_date" name="sch_end_date" class="ipt schIpt dataIpt" value="" placeholder="종료일" style="width: 230px;">
+                                <label for="sch_end_date" class="btn square trans"><i class="k-icon k-i-calendar"></i></label>
+                            </div>
+                        </div>
+                    </div>      
+                    <div class="sch_btn_wrap">
+                        <span class="ipt_right addon">
+                            <a href="#" class="btn blue">검색</a>
+                            <a href="#" class="btn gray">초기화</a>
+                        </span>
+                    </div>
+                </div> 
+            </div>
+            <div class="board_list_info">
+                전체 <span id="totalCount">{{count}}</span>개, 현재 페이지 
+                <span id="totalCount">1</span>/2
+            </div>
+        </div>
+        <form  autocomplete="off" name="frmWrite" method="post" action="/boffice/menu/menuWrite">
+            <input name="page_now"        type="hidden" value="{{querys.page_now}}"/>
+            <input name="up_menu_no"      type="hidden" value="{{querys.up_menu_no}}"/>
+            <input name="parent_menu_no"  type="hidden" value="{{querys.parent_menu_no}}"/>
+            <input name="menu_gb"         type="hidden" value="{{querys.menu_gb}}"/>
+            <input name="returl"          type="hidden" value="{{returl}}"/>
+            <input name="param"           type="hidden" value="{{param}}"/>
+            <input name="menu_no"         type="hidden" value=""/>
+            <input name="target_menu_no"  type="hidden" value="{{querys.menu_no}}"/>
+        </form>    	
+        <table class="board_list_normal">
+            <colgroup>
+                <col width="4%">
+                <col width="4%">
+                <col width="50%">
+                <col width="4%">
+                <col width="4%">
+                <col class="w_show" width="4%">
+                <col class="w_show" width="30%">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>메뉴번호</th>
+                    <th>메뉴명</th>
+                    <th>Depth</th>
+                    <th class="w_show">순서</th>
+                    <th class="w_show">사용여부</th>
+                    <th class="w_show">관리</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in list%}
+                <tr>
+                    <td class="num">{{loop.index}}</td>
+                    <td class="center" style="cursor:pointer">{{item.menu_no}}</td>
+                    <td class="center postTitle"><a href="javascript: void(0)" class="link">{{item.menu_nm}}</a></td>
+                    <td class="center">{{item.menu_lvl}}</td>
+                    <td class="center w_show">{{item.ord}}</td>
+                    <td class="center w_show">{{item.use_yn}}</td>
+                    <td class="center state w_show">
+                        <span style="cursor: pointer;" class="active" onclick="location.href='{{returl}}?menu_no={{querys.menu_no}}&up_menu_no={{item.menu_no}}&parent_menu_no={{item.up_menu_no}}&menu_gb={{item.menu_gb}}'">하위메뉴</span>
+                        <span style="cursor: pointer;" class="active" onclick='fModify("{{item.menu_no}}","{{item.up_menu_no}}");'>수정</span>
+                        <span style="cursor: pointer;" class="active" onclick='fDelete("{{item.menu_no}}","{{item.up_menu_no}}");'>삭제</span>
+                    </td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+        <div class="pagination">
+            {{paging|safe}}
+        </div>
+        <div class="board_list_btn right">
+            <input type="button" onclick="location.href='{{returl}}?menu_no={{querys.menu_no}}&up_menu_no={{querys.parent_menu_no}}&menu_gb={{querys.menu_gb}}'" class="btn blue" value="상위메뉴">
+            <input type="button" class="btn blue" value="게시물 등록" onclick='fWrite("{{querys.up_menu_no}}");'>
+        </div>
+    </div>
+{% endblock %}

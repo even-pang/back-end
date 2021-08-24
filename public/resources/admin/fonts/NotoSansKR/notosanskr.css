@@ -1,0 +1,80 @@
+/** 
+  - IE6~8 eot 지원
+  - Chrome, Safari, Firefox, Opera 구버전들 ttf 지원
+  - Chrome, Safari, Firefox, Opera, IE9+ woff 지원
+  - 사실상 그 외의 파일은 큰 의미가 없는듯.. (특히 otf 용량만 크고 무쓸모.. 왜 넣었는지 나도 노이해..)
+  Converting Site -- https://onlinefontconverter.com/
+**/
+
+@font-face {
+  font-family: 'NotoSansKR';
+  font-style: normal;
+  font-weight: 100;
+  src: url(NotoSansKR-Thin.eot);
+  src: url(NotoSansKR-Thin.eot?#iefix) format('embedded-opentype'),
+       url(NotoSansKR-Thin.woff2) format('woff2'),
+       url(NotoSansKR-Thin.woff) format('woff'),
+       url(NotoSansKR-Thin.otf) format('opentype'),
+       url(NotoSansKR-Thin.ttf) format('truetype'),
+       url(NotoSansKR-Thin.svg#NotoSansKR) format('svg');
+}
+@font-face {
+  font-family: 'NotoSansKR';
+  font-style: normal;
+  font-weight: 300;
+  src: url(NotoSansKR-Light.eot);
+  src: url(NotoSansKR-Light.eot?#iefix) format('embedded-opentype'),
+       url(NotoSansKR-Light.woff2) format('woff2'),
+       url(NotoSansKR-Light.woff) format('woff'),
+       url(NotoSansKR-Light.otf) format('opentype'),
+       url(NotoSansKR-Light.ttf) format('truetype'),
+       url(NotoSansKR-Light.svg#NotoSansKR) format('svg');
+}
+@font-face {
+  font-family: 'NotoSansKR';
+  font-style: normal;
+  font-weight: 400;
+  src: url(NotoSansKR-Regular.eot);
+  src: url(NotoSansKR-Regular.eot?#iefix) format('embedded-opentype'),
+       url(NotoSansKR-Regular.woff2) format('woff2'),
+       url(NotoSansKR-Regular.woff) format('woff'),
+       url(NotoSansKR-Regular.otf) format('opentype'),
+       url(NotoSansKR-Regular.ttf) format('truetype'),
+       url(NotoSansKR-Regular.svg#NotoSansKR) format('svg');
+ }
+@font-face {
+  font-family: 'NotoSansKR';
+  font-style: normal;
+  font-weight: 500;
+  src: url(NotoSansKR-Medium.eot);
+  src: url(NotoSansKR-Medium.eot?#iefix) format('embedded-opentype'),
+       url(NotoSansKR-Medium.woff2) format('woff2'),
+       url(NotoSansKR-Medium.woff) format('woff'),
+       url(NotoSansKR-Medium.otf) format('opentype'),
+       url(NotoSansKR-Medium.ttf) format('truetype'),
+       url(NotoSansKR-Medium.svg#NotoSansKR) format('svg');
+ }
+@font-face {
+  font-family: 'NotoSansKR';
+  font-style: normal;
+  font-weight: 700;
+  src: url(NotoSansKR-Bold.eot);
+  src: url(NotoSansKR-Bold.eot?#iefix) format('embedded-opentype'),
+       url(NotoSansKR-Bold.woff2) format('woff2'),
+       url(NotoSansKR-Bold.woff) format('woff'),
+       url(NotoSansKR-Bold.otf) format('opentype'),
+       url(NotoSansKR-Bold.ttf) format('truetype'),
+       url(NotoSansKR-Bold.svg#NotoSansKR) format('svg');
+ }
+@font-face {
+  font-family: 'NotoSansKR';
+  font-style: normal;
+  font-weight: 900;
+  src: url(NotoSansKR-Black.eot);
+  src: url(NotoSansKR-Black.eot?#iefix) format('embedded-opentype'),
+       url(NotoSansKR-Black.woff2) format('woff2'),
+       url(NotoSansKR-Black.woff) format('woff'),
+       url(NotoSansKR-Black.otf) format('opentype'),
+       url(NotoSansKR-Black.ttf) format('truetype'),
+       url(NotoSansKR-Black.svg#NotoSansKR) format('svg');
+ }

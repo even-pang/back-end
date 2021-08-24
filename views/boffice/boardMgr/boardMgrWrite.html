@@ -1,0 +1,324 @@
+{% extends 'boffice/include/layout.html' %}
+
+{% block content %}
+    <script>
+        function fSubmit()
+        {
+            vObj = document.frmInput;   
+            if (!checkEmpty     (vObj.brd_nm,  "게시판 명을 입력하세요")) return;
+            if (!confirm("저장하시겠습니까?")) return;
+            var targetUrl = "/boffice/boardMgr/boardMgrWork";
+            let type = 'POST';
+            if('{{iflag}}' == 'UPDATE') type = 'PATCH';
+
+            $.ajax(
+                {
+                    url:targetUrl,
+                    type: type,
+                    cache:false,
+                    data:$("form[name='frmInput']").serialize(),
+                    dataType:'text',
+                    success:function(data) {
+                        alert(data);
+                        location.href='{{returl}}?{{param | safe}}';
+                    },
+                    error:(err) => {
+                        console.log(err);
+                    }
+                }	
+            );
+        }   
+    </script>
+
+    <div class="body">
+        <form  autocomplete="off" name="frmInput" method="post"  action="/boffice/boardmgr/boardMgrWork">
+            <input name="iflag"     type="hidden" value="{{iflag | default(iflag, 'INSERT', true)}}">
+            <input name="brd_mgrno" type="hidden" value="{{detail.brd_mgrno}}"/>
+            <input name="returl"    type="hidden" value="{{returl}}">
+            <input name="param"     type="hidden" value="{{param}}">			
+            <input name="menu_no"   type="hidden" value="{{detail.menu_no}}">
+
+            <table class="board_list_normal">
+                <colgroup>
+                    <col width="15%" />
+                    <col width="35%" />
+                    <col width="15%" />
+                    <col width="35%" />
+                </colgroup> 
+                <tr>
+                    <th scope="col">게시판 명</th>
+                    <td scope="col" colspan="3"><input type="text" style="width:700px" name="brd_nm" class="input-text" value="{{detail.brd_nm}}" maxlength="100"/></td>
+                </tr>
+                <tr>
+                    <th scope="col">사이트명</th>
+                    <td scope="col" colspan="3"><input type="text" style="width:700px" name="brd_snm" class="input-text" value="{{detail.brd_snm}}" maxlength="50"/></td>
+                </tr>
+
+                <tr>
+                    <th scope="col">적용사이트  </th>
+                    <td scope="col" colspan="3">
+                       <select name="site_gb" class="input-text">
+                            {% for item in menuCodeList%}
+                            <option value="{{item.comm_cd}}" {%if detail.site_gb == item.comm_cd%}selected{%endif%}>{{item.cd_nm}}</option>
+                            {%endfor%}
+                       </select>						    
+                    </td>
+                </tr>
+
+                <tr>
+                    <th scope="col">게시판 유형</th>
+                    <td scope="col" colspan="3">
+                       <select name="brd_skin_cd" class="input-text">
+                            {% for item in skinCodeList%}
+                            <option value="{{item.comm_cd}}" {%if detail.brd_skin_cd == item.comm_cd%}selected{%endif%}>{{item.cd_nm}}</option>
+                            {%endfor%}
+                       </select>						    
+                    </td>
+                </tr>
+
+                <tr>  
+                    <th scope="col">사용여부</th>
+                    <td scope="col" colspan="3">
+                        <label for="use_yn_y">Y</label><input type="radio" name="use_yn" value="Y" id="use_yn_y" {%if detail.use_yn == 'Y'%}checked{%endif%}>
+                        <label for="use_yn_n">N</label><input type="radio" name="use_yn" value="N" id="use_yn_n" {%if detail.use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th scope="col">리스트 개수</th>
+                    <td scope="col" colspan="3">
+                       <input type="text"  name="list_cnt" style="width:50px;IME-MODE:disabled;" onkeypress="onlysu();"  class="input-text"  value="{{detail.list_cnt}}" maxlength="3"/>
+                                ※ [0]을 입력시 사용자 화면에서 페이징이 나오지 않음
+                    </td>
+                </tr>				
+
+                <tr>
+                    <th scope="col">게시글 삭제여부</th>
+                    <td scope="col" colspan="3">
+                        <label for="delflag_y">Y</label><input type="radio" name="delflag" value="Y" id="delflag_y" {%if detail.delflag == 'Y'%}checked{%endif%}>
+                        <label for="delflag_n">N</label><input type="radio" name="delflag" value="N" id="delflag_n" {%if detail.delflag == 'N'%}checked{%endif%}>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th scope="col">내용 사용여부</th>
+                    <td scope="col" colspan="3">
+                        <label for="ctnt_use_yn_y">Y</label><input type="radio" name="ctnt_use_yn" value="Y" id="ctnt_use_yn_y" {%if detail.ctnt_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="ctnt_use_yn_n">N</label><input type="radio" name="ctnt_use_yn" value="N" id="ctnt_use_yn_n" {%if detail.ctnt_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <th scope="col">글쓰기 권한</th>
+                    <td scope="col" colspan="3">
+                        {% for item in wauthCodeList%}
+                        <label for="{{item.comm_cd}}">{{item.cd_nm}}</label><input type="radio" name="write_auth_cd" value="{{item.comm_cd}}" id="{{item.comm_cd}}" {%if detail.write_auth_cd == item.comm_cd%}checked{%endif%}>
+                        {%endfor%}
+                    </td>
+                </tr>
+                 
+                <tr>
+                    <th scope="col">첨부파일 개수</th>
+                    <td scope="col" colspan="3"><input type="text"  name="attach_file_cnt" style="width:50px;IME-MODE:disabled;" onkeypress="onlysu();"  class="input-text"  value="{{detail.attach_file_cnt}}" maxlength="2"/></td>
+                </tr>							 
+                
+                <tr>
+                    <th scope="col">상단공지 사용여부</th>
+                    <td scope="col" colspan="3">
+                        <label for="top_fix_use_yn_y">Y</label><input type="radio" name="top_fix_use_yn" value="Y" id="top_fix_use_yn_y" {%if detail.top_fix_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="top_fix_use_yn_n">N</label><input type="radio" name="top_fix_use_yn" value="N" id="top_fix_use_yn_n" {%if detail.top_fix_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                </tr>							
+                 
+                <tr>
+                    <th scope="col">카테고리  사용여부</th>
+                    <td scope="col">
+                        <label for="cate_cd_use_yn_y">Y</label><input type="radio" name="cate_cd_use_yn" value="Y" id="cate_cd_use_yn_y" {%if detail.cate_cd_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="cate_cd_use_yn_n">N</label><input type="radio" name="cate_cd_use_yn" value="N" id="cate_cd_use_yn_n" {%if detail.cate_cd_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                    <th scope="col">코드명</th>						    
+                    <td scope="col">
+                       <select name="cate_cd" class="input-text">
+                            <option value="">선택하세요</option>
+                            {%for item in codeList%}
+                            <option value="{{item.cd_type}}" {%if detail.cate_cd == item.cd_type%}selected{%endif%}>{{item.cd_nm}}</option>
+                            {%endfor%}
+                        </select> 타이틀명&nbsp;
+                        <input type="text" style="width:200px" name="cate_cd_title" class="input-text" value="{{detail.cate_cd_title}}" maxlength="50"/> 
+                    </td>						    
+                </tr>						 
+
+                <tr>
+                    <th scope="col">통합검색 사용여부</th>
+                    <td scope="col" colspan="3">
+                        <label for="total_search_use_yn_y">Y</label><input type="radio" name="total_search_use_yn" value="Y" id="total_search_use_yn_y" {%if detail.total_search_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="total_search_use_yn_n">N</label><input type="radio" name="total_search_use_yn" value="N" id="total_search_use_yn_n" {%if detail.total_search_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                </tr>						 
+
+                <tr>
+                    <th scope="col">정렬필드 사용여부</th>
+                    <td scope="col" colspan="3">
+                        <label for="ord_use_yn_y">Y</label><input type="radio" name="ord_use_yn" value="Y" id="ord_use_yn_y" {%if detail.ord_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="ord_use_yn_n">N</label><input type="radio" name="ord_use_yn" value="N" id="ord_use_yn_n" {%if detail.ord_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                </tr>								 
+                  
+                <tr>
+                    <th scope="col">작성자 사용여부</th>
+                    <td scope="col" colspan="3">
+                        <label for="writer_use_yn_y">Y</label><input type="radio" name="writer_use_yn" value="Y" id="writer_use_yn_y" {%if detail.writer_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="writer_use_yn_n">N</label><input type="radio" name="writer_use_yn" value="N" id="writer_use_yn_n" {%if detail.writer_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                </tr>						 
+
+                <tr>
+                    <th scope="col">연락처 사용여부</th>
+                    <td scope="col" colspan="3">
+                        <label for="phone_use_yn_y">Y</label><input type="radio" name="phone_use_yn" value="Y" id="phone_use_yn_y" {%if detail.phone_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="phone_use_yn_n">N</label><input type="radio" name="phone_use_yn" value="N" id="phone_use_yn_n" {%if detail.phone_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                </tr>						 
+
+                <tr>
+                    <th scope="col">이메일  사용여부</th>
+                    <td scope="col" colspan="3">
+                        <label for="email_use_yn_y">Y</label><input type="radio" name="email_use_yn" value="Y" id="email_use_yn_y" {%if detail.email_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="email_use_yn_n">N</label><input type="radio" name="email_use_yn" value="N" id="email_use_yn_n" {%if detail.email_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                </tr>
+                                          
+                <tr>
+                    <th scope="col">게시기간   사용여부</th>
+                    <td scope="col">
+                        <label for="term_use_yn_y">Y</label><input type="radio" name="term_use_yn" value="Y" id="term_use_yn_y" {%if detail.term_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="term_use_yn_n">N</label><input type="radio" name="term_use_yn" value="N" id="term_use_yn_n" {%if detail.term_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                    <th scope="col">게시기간 타이틀</th>						    
+                    <td scope="col">
+                        <input type="text" style="width:100px" name="term_sdt_title" class="input-text" value="{{detail.term_sdt_title}}" maxlength="50"/> ~
+                        <input type="text" style="width:100px" name="term_edt_title" class="input-text" value="{{detail.term_edt_title}}" maxlength="50"/>
+                    </td>						    
+                </tr>						 
+                
+                                         
+                <tr>
+                    <th scope="col">날짜   사용여부</th>
+                    <td scope="col">
+                        <label for="date_use_yn_y">Y</label><input type="radio" name="date_use_yn" value="Y" id="date_use_yn_y" {%if detail.date_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="date_use_yn_n">N</label><input type="radio" name="date_use_yn" value="N" id="date_use_yn_n" {%if detail.date_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                    <th scope="col">날짜   타이틀</th>						    
+                    <td scope="col"><input type="text" style="width:200px" name="date_title" class="input-text" value="{{detail.date_title}}" maxlength="50"/></td>
+                </tr>							
+
+                <tr>
+                    <th scope="col">팝업사이즈 사용여부</th>
+                    <td scope="col" colspan="3">
+                        <label for="popsize_use_yn_y">Y</label><input type="radio" name="popsize_use_yn" value="Y" id="popsize_use_yn_y" {%if detail.popsize_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="popsize_use_yn_n">N</label><input type="radio" name="popsize_use_yn" value="N" id="popsize_use_yn_n" {%if detail.popsize_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                </tr>	
+
+                <tr>
+                    <th scope="col">URL 사용여부</th>
+                    <td scope="col" colspan="3">
+                        <label for="url_use_yn_y">Y</label><input type="radio" name="url_use_yn" value="Y" id="url_use_yn_y" {%if detail.url_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="url_use_yn_n">N</label><input type="radio" name="url_use_yn" value="N" id="url_use_yn_n" {%if detail.url_use_yn == 'N'%}checked{%endif%}>
+                          <br/>※목록화면에서바로 이동하기 : 
+                          <label for="direct_url_use_yn_y">Y</label><input type="radio" name="direct_url_use_yn" value="Y" id="direct_url_use_yn_y" {%if detail.direct_url_use_yn == 'Y'%}checked{%endif%}>
+                          <label for="direct_url_use_yn_n">N</label><input type="radio" name="direct_url_use_yn" value="N" id="direct_url_use_yn_n" {%if detail.direct_url_use_yn == 'N'%}checked{%endif%}>					    
+                    </td>
+                </tr>	
+
+
+                <tr>
+                    <th scope="col">답글쓰기  여부</th>
+                    <td scope="col" colspan="3">
+                        <label for="reply_use_yn_y">Y</label><input type="radio" name="reply_use_yn" value="Y" id="reply_use_yn_y" {%if detail.reply_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="reply_use_yn_n">N</label><input type="radio" name="reply_use_yn" value="N" id="reply_use_yn_n" {%if detail.reply_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                </tr>
+                                             
+                <tr>
+                    <th scope="col">등록일 별도입력</th>
+                    <td scope="col" colspan="3">
+                        <label for="regdt_use_yn_y">Y</label><input type="radio" name="regdt_use_yn" value="Y" id="regdt_use_yn_y" {%if detail.regdt_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="regdt_use_yn_n">N</label><input type="radio" name="regdt_use_yn" value="N" id="regdt_use_yn_n" {%if detail.regdt_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                </tr>
+                                             
+                <tr>
+                    <th scope="col">비밀글 사용 여부</th>
+                    <td scope="col" colspan="3">
+                        <label for="secret_use_yn_y">Y</label><input type="radio" name="secret_use_yn" value="Y" id="secret_use_yn_y" {%if detail.secret_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="secret_use_yn_n">N</label><input type="radio" name="secret_use_yn" value="N" id="secret_use_yn_n" {%if detail.secret_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                </tr>							 
+
+                <tr>
+                    <th scope="col">추가항목1   사용여부</th>
+                    <td scope="col">
+                        <label for="etc_field1_use_yn_y">Y</label><input type="radio" name="etc_field1_use_yn" value="Y" id="etc_field1_use_yn_y" {%if detail.etc_field1_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="etc_field1_use_yn_n">N</label><input type="radio" name="etc_field1_use_yn" value="N" id="etc_field1_use_yn_n" {%if detail.etc_field1_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                    <th scope="col">추가항목1   타이틀</th>						    
+                    <td scope="col"><input type="text" style="width:200px" name="etc_field1_title" class="input-text" value="{{detail.etc_field1_title}}" maxlength="50"/></td>
+                </tr>						
+
+                <tr>
+                    <th scope="col">추가항목2   사용여부</th>
+                    <td scope="col">
+                        <label for="etc_field2_use_yn_y">Y</label><input type="radio" name="etc_field2_use_yn" value="Y" id="etc_field2_use_yn_y" {%if detail.etc_field2_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="etc_field2_use_yn_n">N</label><input type="radio" name="etc_field2_use_yn" value="N" id="etc_field2_use_yn_n" {%if detail.etc_field2_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                    <th scope="col">추가항목2   타이틀</th>						    
+                    <td scope="col"><input type="text" style="width:200px" name="etc_field2_title" class="input-text" value="{{detail.etc_field2_title}}" maxlength="50"/></td>
+                </tr>						
+
+                <tr>
+                    <th scope="col">추가항목3   사용여부</th>
+                    <td scope="col">
+                        <label for="etc_field3_use_yn_y">Y</label><input type="radio" name="etc_field3_use_yn" value="Y" id="etc_field3_use_yn_y" {%if detail.etc_field3_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="etc_field3_use_yn_n">N</label><input type="radio" name="etc_field3_use_yn" value="N" id="etc_field3_use_yn_n" {%if detail.etc_field3_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                    <th scope="col">추가항목3   타이틀</th>						    
+                    <td scope="col"><input type="text" style="width:200px" name="etc_field3_title" class="input-text" value="{{detail.etc_field3_title}}" maxlength="50"/></td>
+                </tr>						
+                            
+
+                <tr>
+                    <th scope="col">추가항목4   사용여부</th>
+                    <td scope="col">
+                        <label for="etc_field4_use_yn_y">Y</label><input type="radio" name="etc_field4_use_yn" value="Y" id="etc_field4_use_yn_y" {%if detail.etc_field4_use_yn == 'Y'%}checked{%endif%}>
+                        <label for="etc_field4_use_yn_n">N</label><input type="radio" name="etc_field4_use_yn" value="N" id="etc_field4_use_yn_n" {%if detail.etc_field4_use_yn == 'N'%}checked{%endif%}>
+                    </td>
+                    <th scope="col">추가항목4   타이틀</th>						    
+                    <td scope="col"><input type="text" style="width:200px" name="etc_field4_title" class="input-text" value="{{detail.etc_field4_title}}" maxlength="50"/></td>
+                </tr>										
+                                             
+                <tr>
+                    <th scope="col">썸네일가로사이즈</th>
+                    <td scope="col" colspan="3"><input type="text"  style="width:50px;IME-MODE:disabled;" onkeypress="onlysu();"  name="thm_width_size" class="input-text" value="{{detail.thm_width_size}}" maxlength="10"/></td>
+                </tr>
+                                     
+                <tr>
+                    <th scope="col">썸네일세로사이즈</th>
+                    <td scope="col" colspan="3"><input type="text" style="width:50px;IME-MODE:disabled;" onkeypress="onlysu();"  name="thm_height_size" class="input-text" value="{{detail.thm_height_size}}" maxlength="10"/></td>
+                </tr>						 
+
+                <tr>
+                    <th scope="col">내용</th>
+                    <td scope="col" colspan="3">
+                    <textarea name="brd_desc" cols="70" rows="7" class="input-text">{{detail.brd_desc}}</textarea>  	
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div class="board_list_btn">
+            <input type="button" class="btn blue" value="저장"onclick='fSubmit()'>
+            <input type="button" class="btn blue" value="이전" onclick='history.back()'>
+        </div>
+    </div>
+{% endblock %}

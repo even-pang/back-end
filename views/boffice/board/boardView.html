@@ -1,0 +1,199 @@
+{% extends 'boffice/include/layout.html' %}
+
+{% block content %}
+    <script>
+
+        function fModify()
+        {
+            vObj = document.frmWrite;   
+
+            vObj.action = "/boffice/board/boardWrite";
+            
+            vObj.submit();
+        }
+
+        function fDelete()
+        {
+            vObj = document.frmWrite;   
+            if (!confirm("삭제하시겠습니까?")) return;
+            var targetUrl = "/boffice/board/boardWork";
+
+            $.ajax(
+                {
+                    url:targetUrl,
+                    type:'DELETE',
+                    cache:false,
+                    data:$("form[name='frmWrite']").serialize(),
+                    dataType:'text',
+                    success:function(data) {
+                        alert(data);
+                        location.href='{{returl}}?{{param | safe}}';
+                    },
+                    error:(err) => {
+                        console.log(err);
+                    }
+                }	
+            );
+        }   
+    </script>
+
+    <div class="body">
+        <form  autocomplete="off" name="frmWrite" method="post" action="">
+            <input name="iflag"     type="hidden" value="{{iflag | default(iflag, 'INSERT', true)}}">
+            <input name="keykind"   type="hidden" value="{{querys.keykind}}"/>
+            <input name="keyword"   type="hidden" value="{{querys.keyword}}"/>            
+            <input name="page_now"  type="hidden" value="{{querys.page_now}}"/>
+            <input name="brd_mgrno" type="hidden" value="{{detail.brd_mgrno}}"/>
+            <input name="brd_no"    type="hidden" value="{{detail.brd_no}}"/>
+            <input name="menu_no"   type="hidden" value="{{menu_no}}">
+            <input name="returl"    type="hidden" value="{{returl}}">
+            <input name="param"     type="hidden" value="{{param}}">		
+        </form>	
+    
+        <table class="board_list_normal">
+            <colgroup>
+                <col width="10%">
+                <col width="90%">
+            </colgroup>
+            <tbody>
+                <tr>
+                    <th scope="col">제목</th>
+                    <td scope="col">{{detail.ttl}}</td>
+                </tr>
+                
+                {% if "Y"== boardmgrDetail.top_fix_use_yn %}						
+                <tr>
+                    <th scope="col">상단공지여부</th>
+                    <td scope="col">{{detail.notice_yn}}</td>
+                </tr>	 
+                {%endif%}
+                    
+
+                {% if "ALL"== boardmgrDetail.site_gb %}
+                <tr>
+                    <th scope="col">적용사이트</th>
+                    <td scope="col">{{detail.site_gb}}</td>
+                </tr>	 
+                {%endif%}
+
+                {% if "Y"== boardmgrDetail.cate_cd_use_yn %}						
+                <tr>
+                    <th scope="col">{{boardmgrDetail.cate_cd_title}}</th>
+                    <td scope="col">{{detail.cate_cd}}</td>
+                </tr>	 
+                {%endif%}                     
+                    
+                <tr>
+                    <th scope="col">작성자 </th>
+                    <td scope="col">{{detail.reg_id}}</td>
+                </tr>	               
+                                    
+                {% if "Y"== boardmgrDetail.email_use_yn %}
+                <tr>
+                    <th scope="col">이메일 </th>
+                    <td scope="col">{{detail.email}}%></td>
+                </tr>	 
+                {%endif%}  
+
+                {% if "Y"== boardmgrDetail.term_use_yn %}
+                <tr>
+                    <th scope="col">기간 </th>
+                    <td scope="col">{{detail.sdt}} ~ {{detail.edt}}</td>
+                </tr>	 
+                {% elif "Y"== boardmgrDetail.date_use_yn %}
+                <tr>
+                    <th scope="col">{{boardmgrDetail.date_title}}</th>
+                    <td scope="col">{{detail.sdt}}</td>
+                </tr>
+                {%endif%}
+                
+                {% if "Y"== boardmgrDetail.etc_field1_use_yn %}
+                <tr>
+                    <th scope="col">{{boardmgrDetail.etc_field1_title}}</th>
+                    <td scope="col">{{detail.etc_field1}}</td>
+                </tr>	 
+                {%endif%}   						 
+                    
+                {% if "Y"== boardmgrDetail.etc_field2_use_yn %}
+                <tr>
+                    <th scope="col">{{boardmgrDetail.etc_field2_title}}</th>						     
+                    <td scope="col">{{detail.etc_field2}}</td>
+                </tr>	 
+                {%endif%} 						 
+                
+                {% if "Y"== boardmgrDetail.etc_field3_use_yn %}
+                <tr>
+                    <th scope="col">{{boardmgrDetail.etc_field3_title}}</th>						     
+                    <td scope="col">{{detail.etc_field3}}</td>
+                </tr>	 
+                {%endif%}							
+                    
+                {% if "Y"== boardmgrDetail.etc_field4_use_yn %}
+                <tr>
+                    <th scope="col">{{boardmgrDetail.etc_field4_title}}</th>						     
+                    <td scope="col">{{detail.etc_field4}}</td>
+                </tr>	 
+                {%endif%}							 
+                    
+                {% if "Y"== boardmgrDetail.ctnt_use_yn %}		 
+                <tr>
+                    <th scope="col">내용</th>
+                    <td scope="col">
+                    {% if fileList%}
+                        {%for item in fileList%}
+                        <img src="{{item.file_realnm}}" style="width: 100%; height: auto;"><br/>
+                        {%endfor%}
+                    {% endif %}
+                    {{detail.ctnt | safe}}
+                    </td>
+                </tr> 						 
+                {%endif%}
+            
+                {% if "Y"== boardmgrDetail.url_use_yn %}
+                <tr>
+                    <th scope="col">URL </th>
+                    <td scope="col"><a href="{{detail.url}}" target="{{detail.url}}T}}" >{{detail.url}}</a>
+                </tr>	 
+                {%endif%}  	
+                
+                {% if "Y"== boardmgrDetail.popsize_use_yn %}
+                <tr>
+                    <th scope="col">팝업 넓이 </th>
+                    <td scope="col">{{detail.win_width}}</td>
+                </tr>	 
+                                    
+                <tr>
+                    <th scope="col">팝업 높이 </th>
+                    <td scope="col">{{detail.win_height}}</td>
+                </tr>	 
+                {%endif%}       	 
+                    
+                <tr>
+                    <th scope="col">사용여부</th>
+                    <td scope="col">{{detail.use_yn}}</td>
+                </tr>						 
+                    
+                {% if fileList%}
+                <tr>
+                    <th scope="col">첨부파일</th>
+                    <td scope="col">
+                    {%for item in fileList%}
+                    <a href="javascript:download('{{item.file_no}}')">{{item.file_nm}}</a>
+                    {%endfor%}
+                    </td>
+                </tr>
+                {% endif %}
+
+                <tr>
+                    <th scope="col">등록일 </th>
+                    <td scope="col">{{detail.reg_dt}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="board_list_btn">
+            <input type="button" class="btn blue" value="수정" onclick='fModify()'>
+            <input type="button" class="btn blue" value="삭제" onclick='fDelete()'>
+            <input type="button" class="btn blue" value="목록" onclick='location.href="{{returl}}?{{param}}"'>
+        </div>
+    </div>
+{% endblock %}

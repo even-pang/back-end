@@ -1,0 +1,214 @@
+{% extends 'boffice/include/layout.html' %}
+
+{% block content %}
+    <script>
+        function fSubmit()
+        {
+            vObj = document.frmInput;   
+            if (!confirm("저장하시겠습니까?")) return;
+            var targetUrl = "/boffice/board/boardWork";
+            let type = 'POST';
+            if('{{iflag}}' == 'UPDATE') type = 'PATCH';
+
+            for ( instance in CKEDITOR.instances ) CKEDITOR.instances[instance].updateElement();
+
+            $.ajax(
+                {
+                    url:targetUrl,
+                    type: type,
+                    cache:false,
+                    data:$("form[name='frmInput']").serialize(),
+                    dataType:'text',
+                    success:function(data) {
+                        alert(data);
+                        location.href='{{returl}}?{{param | safe}}';
+                    },
+                    error:(err) => {
+                        console.log(err);
+                    }
+                }	
+            );
+        }   
+    </script>
+    <!-- ------------------ HTML Editor Control Start ----------------------- -->
+    <script src="/ckeditor/ckeditor.js"></script>
+    <!-- ------------------ HTML Editor Control End ----------------------- --> 
+
+    <div class="body">
+        <form  autocomplete="off" name="frmInput" method="post" enctype="multipart/form-data" action="">
+            <input name="iflag"     type="hidden" value="{{iflag | default(iflag, 'INSERT', true)}}">
+            <input name="menu_no"   type="hidden" value="{{detail.menu_no}}">
+            <input name="returl"    type="hidden" value="{{returl}}">
+            <input name="param"     type="hidden" value="{{param}}">			
+            <input name="brd_mgrno" type="hidden" value="{{boardmgrDetail.brd_mgrno}}"/>
+            <input name="brd_no"    type="hidden" value="{{detail.brd_no}}"/>
+            <input name="menu_no"   type="hidden" value="{{menu_no}}"/>
+
+            <table class="board_list_normal">
+                <colgroup>
+                    <col width="15%" />
+                    <col width="*%" />
+                    <col width="10%" />
+                    <col width="20%" />
+                </colgroup> 
+                <tr>
+                    <th scope="col">제목</th>
+                    <td scope="col" colspan="3">
+                        <input type="text" style="width:700px" name="ttl" class="input-text" value="{{detail.ttl}}" maxlength="300"/>
+                    </td>
+                </tr>
+                
+                {% if "Y"== boardmgrDetail.top_fix_use_yn %}
+                <tr>
+                    <th scope="col">상단공지여부 </th>
+                    <td scope="col" colspan="3">
+                        <select name="notice_yn">
+                            <option value="">선택하세요</option>
+                            <option value="Y">Y</option>
+                            <option value="N">N</option>
+                        </select>
+                    </td>
+                </tr>	 
+                {%endif%}
+                
+                {% if "ALL"== boardmgrDetail.site_gb %}
+                <tr>
+                    <th scope="col">적용사이트</th>
+                    <td scope="col" colspan="3">
+                        HOME
+                        <input type="hidden" name="site_gb" value="HOME"/>
+                    </td>
+                </tr>	 
+                {%endif%}                  
+                
+                {% if "Y"== boardmgrDetail.cate_cd_use_yn %}
+                    <tr>
+                        <th scope="col">{{boardmgrDetail.cate_cd_title}}</th>
+                        <td scope="col" colspan="3">
+                            <select name="cate_cd">
+                                <option value="">선택하세요</option>
+                                sUtil.getComboBox(CommonUtil.nvl(brdMgrMap.get("CATE_CD")), CommonUtil.nvl(dbMap.get("CATE_CD")))
+                            </select>
+                        </td>
+                    </tr>	 
+                {%endif%}	                  				
+                    
+                {% if "Y"== boardmgrDetail.writer_use_yn %}
+                <tr>
+                    <th scope="col">작성자 </th>
+                    <td scope="col" colspan="3"><input type="text" name="reg_nm" style="width:100px" class="input-text" value="{{detail.reg_nm}}" maxlength="30"/></td>
+                </tr>	 
+                {%endif%}
+                                
+                {% if "Y"== boardmgrDetail.email_use_yn %}
+                    <tr>
+                        <th scope="col">이메일 </th>
+                            <td scope="col" colspan="3"><input type="text" name="email"  style="width:200px" class="input-text" value="{{detail.email}}" maxlength="50"/></td>
+                    </tr>	 
+                {%endif%}  
+
+                {% if "Y"== boardmgrDetail.term_use_yn %}
+                    <tr>
+                        <th scope="col">{{boardmgrDetail.term_title}} </th>
+                            <td scope="col" colspan="3">
+                            <input type="text" name="sdt"  style="width:80px" class="input-text" value="{{detail.SDT}}) %>" maxlength="10" readonly />&nbsp;<a href="javascript:cal_open(frmInput.sdt)"><img src="/Common/icon_cal.gif" alt="달력"></a> ~
+                            <input type="text" name="edt"  style="width:80px" class="input-text" value="{{detail.EDT}}) %>" maxlength="10" readonly />&nbsp;<a href="javascript:cal_open(frmInput.edt)"><img src="/Common/icon_cal.gif" alt="달력"></a>						     
+                            </td>
+                    </tr>	 
+                {% elif "Y"== boardmgrDetail.date_use_yn %}
+                    <tr>
+                        <th scope="col">{{boardmgrDetail.date_title}} </th>
+                            <td scope="col" colspan="3">
+                            <input type="text" name="sdt"  style="width:80px" class="input-text" value="{{detail.SDT}}" maxlength="10"  />&nbsp;<a href="javascript:cal_open(frmInput.sdt)"><img src="/Common/icon_cal.gif" alt="달력"></a>					     
+                        </td>
+                    </tr>	                       
+                {%endif%}
+
+                {% if "Y"== boardmgrDetail.regdt_use_yn %}
+                    <tr>
+                        <th scope="col">등록일 </th>
+                            <td scope="col" colspan="3"><input type="text" name="reg_dt"  style="width:80px" class="input-text" value="{{detail.REG_DT}}" maxlength="10"/>
+                            &nbsp;<a href="javascript:cal_open(frmInput.reg_dt)"><img src="/Common/icon_cal.gif" alt="달력"></a>
+                            </td>
+                    </tr>	 
+                {%endif%}
+            
+                {% if "Y"== boardmgrDetail.popsize_use_yn %}
+                <tr>
+                    <th scope="col">팝업 넓이 </th>
+                        <td scope="col" colspan="3"><input type="text" name="win_width"   style="width:60px" class="input-text"  onkeypress="onlysu();" style="IME-MODE:disabled;" value="{{detail.win_width}}" maxlength="5"/></td>
+                </tr>	 
+                                    
+                <tr>
+                    <th scope="col">팝업 높이 </th>
+                        <td scope="col" colspan="3"><input type="text" name="win_height"  style="width:60px" class="input-text"  onkeypress="onlysu();" style="IME-MODE:disabled;" value="{{detail.win_height}}" maxlength="5"/></td>
+                </tr>	 
+                {%endif%} 						
+                        
+                {% if "Y"== boardmgrDetail.etc_field1_use_yn %}
+                    <tr>
+                        <th scope="col">{{boardmgrDetail.etc_field1_title}} </th>
+                        <td scope="col" colspan="3"><input type="text" name="etc_field1"  style="width:500px" class="input-text" value="{{detail.etc_field1}}" maxlength="200"/></td>
+                    </tr>	 
+                {%endif%}   						 
+                        
+                {% if "Y"== boardmgrDetail.etc_field2_use_yn %}
+                    <tr>
+                        <th scope="col">{{boardmgrDetail.etc_field2_title}} </th>						     
+                        <td scope="col" colspan="3"><input type="text" name="etc_field2"  style="width:500px" class="input-text" value="{{detail.etc_field2}}" maxlength="200"/></td>
+                    </tr>	 
+                {%endif%} 						 
+                    
+                {% if "Y"== boardmgrDetail.etc_field3_use_yn %}
+                    <tr>
+                        <th scope="col">{{boardmgrDetail.etc_field3_title}} </th>						     
+                        <td scope="col" colspan="3"><input type="text" name="etc_field3"  style="width:500px" class="input-text" value="{{detail.etc_field3}}" maxlength="200"/></td>
+                    </tr>	 
+                {%endif%}
+                
+                {% if "Y"== boardmgrDetail.etc_field4_use_yn %}
+                    <tr>
+                        <th scope="col">{{boardmgrDetail.etc_field4_title}} </th>						     
+                        <td scope="col" colspan="3"><input type="text" name="etc_field4"  style="width:500px" class="input-text" value="{{detail.etc_field4}}" maxlength="200"/></td>
+                    </tr>	 
+                {%endif%}
+
+                {% if "Y"== boardmgrDetail.ctnt_use_yn %}
+                <tr>
+                    <th scope="col">내용</th>
+                    <td scope="col" colspan="3">
+                        <textarea name="ctnt" cols="70" rows="7" id="ctnt">{{detail.ctnt}}</textarea>	
+                    </td>		
+                    <script>
+                        // Replace the <textarea id="editor1"> with a CKEditor
+                        // instance, using default configuration.
+                        CKEDITOR.replace( 'ctnt' );
+                    </script>	
+                <tr>
+                {%endif%}
+                             
+                <tr>
+                    <th scope="col">사용여부</th>
+                    <td scope="col" colspan="3">
+                        <label for="use_yn_y">Y</label><input type="radio" value="Y" name="use_yn" id="use_yn_y" {% if detail.use_yn == 'Y' %} checked {%endif%}/>
+                        <label for="use_yn_n">N</label><input type="radio" value="N" name="use_yn" id="use_yn_n" {% if detail.use_yn == 'N' %} checked {%endif%}/>
+                    </td>
+                </tr>
+                        
+                {%if boardmgrDetail.attach_file_cnt > 0%}
+                <tr>
+                    <th scope="col">첨부파일</th>
+                    <td scope="col" colspan="3">
+                        upUtil.addInnerFileHtml(lstFile, {{boardmgrDetail.attach_file_cnt}})
+                    </td>
+                </tr>						 
+                {%endif%}
+                </tbody>
+            </table>
+        </form>
+        <div class="board_list_btn">
+            <input type="button" class="btn blue" value="저장"onclick='fSubmit()'>
+            <input type="button" class="btn blue" value="이전" onclick='history.back()'>
+        </div>
+    </div>
+{% endblock %}
