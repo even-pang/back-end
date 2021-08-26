@@ -1,14 +1,11 @@
 require('dotenv').config();
-
-
-
 module.exports = {
   development: {
-    username: 'dolee',
+    username: 'ordadata',
     password: process.env.DB_PASSWORD,
-    database: 'tatooCok',
-    host: '125.180.255.26',
-    dialect: 'mysql',
+    database: 'ordadata',
+    host: 'ordadata.chrq8kiglo4q.ap-northeast-2.rds.amazonaws.com',
+    dialect: 'oracle',
   },
   test: {
     username: 'root',
