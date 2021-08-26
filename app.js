@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'production') {
     app.use(cors({
         origin: function(origin, callback){
             const isTrue = domains.indexOf(origin) !== -1;
-          callback(null, isTrue);
+            callback(null, isTrue);
         },
         credentials: true,
     }));
