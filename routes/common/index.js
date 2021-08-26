@@ -9,9 +9,9 @@ router.use('/ckeditor_file'  ,ckeditorRouter);
 
 router.get('/',(req,res) => {
     res.render('home/index', {
-        title: 'TatooCok',
+        title: 'Ordadata',
         user : req.user,
-        menuList:res.app.get('menuList'),});
+        });
 });
 
 module.exports = router;
