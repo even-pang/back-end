@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const { isLoggedIn, isNotLoggedIn } = require('./loginCheck');
-const { User } = require('../../models');
+const connection = require('../../db');
 
 const router = express.Router();
 

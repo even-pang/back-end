@@ -1,7 +1,6 @@
 const express = require('express');
-const { sequelize } = require('../../models');
+const connection = require('../../db');
 const { isLoggedIn, isNotLoggedIn } = require('./loginCheck');
-const { Menu } = require('../../models');
 
 const router = express.Router();
 

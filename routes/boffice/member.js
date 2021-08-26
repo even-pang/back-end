@@ -1,9 +1,7 @@
 const express = require('express');
-const { Op } = require('sequelize');
+const connection = require('../../db');
 const multer = require('multer');
 const bcrypt = require('bcrypt');
-const { User } = require('../../models');
-const { Customer } = require('../../models');
 const paging = require('./adminPaging');
 const router = express.Router();
 

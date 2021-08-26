@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const { Menu, Boardmgr, sequelize } = require('../../models');
+const connection = require('../../db');
 const router = express.Router();
 const paging = require('./adminPaging');
 

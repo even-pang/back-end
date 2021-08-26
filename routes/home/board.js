@@ -1,9 +1,7 @@
 const express = require('express');
-const { Op } = require('sequelize');
-const { Board, Image, Boardmgr } = require('../../models');
+const connection = require('../../db');
 const multer = require('multer');
 const router = express.Router();
-const paging = require('./homePaging');
 const moment = require('moment');
 const { isLoggedIn, isNotLoggedIn } = require('./loginCheck');
 

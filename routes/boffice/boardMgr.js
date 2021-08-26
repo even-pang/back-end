@@ -1,7 +1,5 @@
 const express = require('express');
-const { Boardmgr } = require('../../models');
-const { Code } = require('../../models');
-const { Op } = require('sequelize');
+const connection = require('../../db');
 const multer = require('multer');
 const router = express.Router();
 const paging = require('./adminPaging');

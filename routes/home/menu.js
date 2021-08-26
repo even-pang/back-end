@@ -1,5 +1,5 @@
 const express = require('express');
-const { sequelize } = require('../../models');
+const connection = require('../../db');
 const router = express.Router();
 
 router.get('/', async (req,res,next) => {

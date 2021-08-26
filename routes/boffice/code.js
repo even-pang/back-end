@@ -1,7 +1,6 @@
 const express = require('express');
-const { Op } = require('sequelize');
 const multer = require('multer');
-const { Code } = require('../../models');
+const connection = require('../../db');
 const router = express.Router();
 
 router.route('/codeList')

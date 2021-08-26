@@ -1,6 +1,5 @@
 const express = require('express');
-const { Op } = require('sequelize');
-const { File } = require('../../models');
+const connection = require('../../db');
 const multer = require('multer');
 const path = require('path');
 const router = express.Router();
