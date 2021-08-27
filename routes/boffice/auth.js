@@ -18,6 +18,7 @@ router.post('/login', isNotLoggedIn,(req, res, next) => {
             return res.redirect(`/boffice?loginError=${info.message}`);
         }
         return req.login(user, (loginError) => {
+            console.log(user);
             if(loginError) {
                 console.error(loginError);
                 return next(loginError);

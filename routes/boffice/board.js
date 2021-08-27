@@ -11,26 +11,27 @@ const moment = require('moment');
 router.route('/boardList')
     .get(async (req, res, next) => {
         try {
+            console.log("입장");
             let pageNum = req.query.page_now; // 요청 페이지 넘버
             let offset = 0;
             if (pageNum > 1) {
                 offset = 10 * (pageNum - 1);
             }
 
-            const boards = await Board.findAndCountAll({
-                where: {
-                    brd_mgrno: req.query.brd_mgrno == undefined ? { [Op.like]: '%' } : req.query.brd_mgrno,
-                },
-                order: [['BRD_NO', 'DESC']],
-                offset: offset,
-                limit: 10
-            });
+            // const boards = await Board.findAndCountAll({
+            //     where: {
+            //         brd_mgrno: req.query.brd_mgrno == undefined ? { [Op.like]: '%' } : req.query.brd_mgrno,
+            //     },
+            //     order: [['BRD_NO', 'DESC']],
+            //     offset: offset,
+            //     limit: 10
+            // });
 
-            const boardmgrDetail = await Boardmgr.findOne({
-                where: {
-                    brd_mgrno: req.query.brd_mgrno,
-                }
-            });
+            // const boardmgrDetail = await Boardmgr.findOne({
+            //     where: {
+            //         brd_mgrno: req.query.brd_mgrno,
+            //     }
+            // });
 
             res.render('boffice/board/boardList', {
                 title: '관리자 - ' + boardmgrDetail.brd_nm + ' 게시판관리',
