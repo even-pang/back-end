@@ -1,9 +1,9 @@
 const express = require('express');
 const oracledb = require('oracledb');
 const dbConfig = require('../../db/dbconfig');
+let conn;
 const { menuList } = require('../../db/boffice/menu');
 const { isLoggedIn, isNotLoggedIn } = require('./loginCheck');
-let conn;
 
 const router = express.Router();
 

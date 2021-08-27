@@ -1,6 +1,9 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
+const oracledb = require('oracledb');
+const dbConfig = require('../db/dbconfig');
+let conn;
 
 module.exports = () => {
     passport.use(new LocalStrategy({
@@ -8,7 +11,9 @@ module.exports = () => {
         passwordField: 'user_pw',
     }, async (user_id, user_pw, done) => {
         try {
-            const exUser = await User.findOne({where:{user_id}});
+            conn = await oracledb.getConnection(dbConfig);
+            const exUser = await conn.execute(`select * from tb_user where user_id = ${user_id}`);
+            console.log(exUser);
             if(exUser) {
                 const result = await bcrypt.compare(user_pw, exUser.pwd);
                 if(result) done(null, exUser);
