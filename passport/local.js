@@ -14,8 +14,8 @@ module.exports = () => {
             conn = await oracledb.getConnection(dbConfig);
             const exUser = await conn.execute(`select * from tb_user where user_id = '${user_id}'`);
             if(exUser.rows[0]) {
-                const result = await bcrypt.compare(user_pw, exUser.rows[0].PWD);
-                if(result) done(null, exUser);
+                const result = await bcrypt.compare(user_pw, exUser.rows[0]["PWD"]);
+                if(result) done(null, exUser.rows[0]);
                 else done(null, false, {message: '비밀번호가 일치하지 않습니다.'});
             } else {
                 done(null, false, {message: '가입되지 않은 회원입니다.'});
