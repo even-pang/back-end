@@ -2,7 +2,6 @@ const passport = require('passport');
 const local = require('./local');
 const oracledb = require('oracledb');
 const dbConfig = require('../db/dbconfig');
-oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 let conn;
 
 module.exports = () => {

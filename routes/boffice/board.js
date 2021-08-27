@@ -1,17 +1,16 @@
 const express = require('express');
 const oracledb = require('oracledb');
-const dbconfig = require('../../db/dbconfig');
-const conn = oracledb.getConnection(dbconfig);
+const dbConfig = require('../../db/dbconfig');
+let conn;
 const multer = require('multer');
 const router = express.Router();
 const paging = require('./adminPaging');
 const moment = require('moment');
 
-
 router.route('/boardList')
     .get(async (req, res, next) => {
         try {
-            console.log("입장");
+            conn = await oracledb.getConnection(dbConfig);
             let pageNum = req.query.page_now; // 요청 페이지 넘버
             let offset = 0;
             if (pageNum > 1) {
@@ -26,15 +25,34 @@ router.route('/boardList')
             //     offset: offset,
             //     limit: 10
             // });
+            const boards = await conn.execute(`
+                    SELECT A.*
+                    from (
+                        SELECT A.*
+                        FROM (  	 
+                            SELECT A.*, rownum as pagingrow
+                            FROM (	
+                                SELECT  /*+index(A IDX_BOARD_01)*/ A.*,
+                                (SELECT COUNT(*) FROM TB_BOARD WHERE BRD_MGRNO = ${req.query.brd_mgrno} AND DELFLAG_YN = 'N' AND USE_YN = 'Y' AND TOP_REG_NO = A.BRD_NO) REPLY_CNT
+                                FROM TB_BOARD A  
+                                WHERE DELFLAG_YN  = 'N'
+                                AND A.brd_mgrno like ${req.query.brd_mgrno != undefined? req.query.brd_mgrno : '%'}
+                                AND A.use_yn    = 'Y'
+                            ) A	
+                        where rownum <= ${req.query.page_end ? req.query.page_end : 10}
+                    ) A		
+                    where 	pagingrow >= ${req.query.page_start ? req.query.page_start : 1}
+                    ) A
+            `);
 
             // const boardmgrDetail = await Boardmgr.findOne({
             //     where: {
             //         brd_mgrno: req.query.brd_mgrno,
             //     }
             // });
-
+            const boardmgrDetail = await conn.execute(`select * from tb_boardmgr where brd_mgrno = ${req.query.brd_mgrno}`);
             res.render('boffice/board/boardList', {
-                title: '관리자 - ' + boardmgrDetail.brd_nm + ' 게시판관리',
+                title: '관리자 - ' + boardmgrDetail.rows[0].BRD_NM + ' 게시판관리',
                 querys: req.query,
                 list: boards.rows,
                 count: boards.count,
