@@ -2,7 +2,9 @@ const express = require('express');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const { isLoggedIn, isNotLoggedIn } = require('./loginCheck');
-const connection = require('../../db');
+const oracledb = require('oracledb');
+const dbconfig = require('../../db/dbconfig');
+const conn = oracledb.getConnection(dbconfig);
 
 const router = express.Router();
 
