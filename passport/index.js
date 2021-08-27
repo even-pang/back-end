@@ -8,7 +8,7 @@ module.exports = () => {
 
     passport.deserializeUser((user_id,done) => {
         conn = oracledb.getConnection(dbConfig);
-        const exUser = conn.execute(`select * from tb_user where user_id = ${user_id}`)
+        const exUser = conn.execute(`select * from tb_user where user_id = '${user_id}'`)
             .then(user => done(null, user))
             .catch(err => done(err));
     });

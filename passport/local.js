@@ -13,9 +13,8 @@ module.exports = () => {
         try {
             conn = await oracledb.getConnection(dbConfig);
             const exUser = await conn.execute(`select * from tb_user where user_id = '${user_id}'`);
-            console.info(exUser);
-            if(exUser) {
-                const result = await bcrypt.compare(user_pw, exUser.pwd);
+            if(exUser.rows[0]) {
+                const result = await bcrypt.compare(user_pw, exUser.rows[0].PWD);
                 if(result) done(null, exUser);
                 else done(null, false, {message: '비밀번호가 일치하지 않습니다.'});
             } else {
