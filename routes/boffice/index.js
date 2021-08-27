@@ -3,6 +3,7 @@ const oracledb = require('oracledb');
 const dbConfig = require('../../db/dbconfig');
 const { menuList } = require('../../db/boffice/menu');
 const { isLoggedIn, isNotLoggedIn } = require('./loginCheck');
+let conn;
 
 const router = express.Router();
 
@@ -15,7 +16,6 @@ const boardMgrRouter = require('./boardMgr');
 router.use('/auth' ,authRouter);
 
 router.use('/', async (req,res,next) => {
-    let conn;
     try {
         conn = await oracledb.getConnection(dbConfig);
         console.log(menuList);
@@ -23,11 +23,15 @@ router.use('/', async (req,res,next) => {
         const menuDetail = await conn.execute("select * from tb_menu where menu_no = 22");
         res.app.set('menuList',menus);
         res.app.set('menuDetail',menuDetail);
-
+        
         next();
     } catch (error) {
         console.log(error);
         next(error);
+    } finally {
+        if (conn) {
+            await conn.close();
+        }
     }
 });
 
