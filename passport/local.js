@@ -12,8 +12,8 @@ module.exports = () => {
     }, async (user_id, user_pw, done) => {
         try {
             conn = await oracledb.getConnection(dbConfig);
-            const exUser = await conn.execute(`select * from tb_user where user_id = ${user_id}`);
-            console.log(exUser);
+            const exUser = await conn.execute(`select * from tb_user where user_id = '${user_id}'`);
+            console.info(exUser);
             if(exUser) {
                 const result = await bcrypt.compare(user_pw, exUser.pwd);
                 if(result) done(null, exUser);
