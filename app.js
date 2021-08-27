@@ -9,6 +9,8 @@ const app = express();
 const helmet = require('helmet');
 const hpp = require('hpp');
 const cors = require('cors');
+const oracledb = require('oracledb');
+oracledb.autoCommit = true;
 const domains = ['112.152.59.38:3060','tattoocok.com', 'http://tattoocok.com', '203.245.29.158'];
 if (process.env.NODE_ENV === 'production') {
     app.use(morgan('combined'));
