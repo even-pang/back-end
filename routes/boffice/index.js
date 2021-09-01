@@ -9,7 +9,6 @@ const router = express.Router();
 
 const menuRouter = require('./menu');
 const authRouter = require('./auth');
-const codeRouter = require('./code');
 const memberRouter = require('./member');
 const boardRouter = require('./board');
 const boardMgrRouter = require('./boardMgr');

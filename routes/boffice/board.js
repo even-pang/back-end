@@ -20,7 +20,7 @@ router.route('/boardList')
                     SELECT A.*
                     from (
                         SELECT A.*
-                        FROM (  	 
+                        FROM (
                             SELECT A.*, rownum as pagingrow
                             FROM (	
                                 SELECT  /*+index(A IDX_BOARD_01)*/ A.*,
@@ -31,7 +31,7 @@ router.route('/boardList')
                                 AND A.use_yn    = 'Y'
                             ) A	
                         where rownum <= ${req.query.page_end ? req.query.page_end : 10}
-                    ) A		
+                        ) A
                     where 	pagingrow >= ${req.query.page_start ? req.query.page_start : 1}
                     ) A
             `);
