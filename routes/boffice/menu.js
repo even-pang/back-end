@@ -1,8 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const oracledb = require('oracledb');
-const dbconfig = require('../../db/dbconfig');
-const conn = oracledb.getConnection(dbconfig);
+const dbConfig = require('../../db/dbconfig');
 const router = express.Router();
 const paging = require('./adminPaging');
 
@@ -10,23 +9,44 @@ const paging = require('./adminPaging');
 router.route('/menuList')
     .get(async (req,res,next) => {
     try {
+        conn = await oracledb.getConnection(dbConfig);
         let pageNum = req.query.page_now; // 요청 페이지 넘버
         let offset = 0;
 
         if(pageNum > 1){
             offset = 10 * (pageNum - 1);
         }
-
-        const menus = await Menu.findAndCountAll({
-            where : {
-                up_menu_no : req.query.up_menu_no == undefined? '0':req.query.up_menu_no, 
-                menu_gb : req.query.menu_gb == undefined? 'ADMIN':req.query.menu_gb,
-            },
-            order: [['ORD', 'ASC']],
-            // pagination
-            offset: offset,
-            limit: 10
-        });
+        
+        //const boardMgrDetail = await Boardmgr.findOne({where:{brd_mgrno: req.body.brd_mgrno}});
+        // const menus = await Menu.findAndCountAll({
+        //     where : {
+        //         up_menu_no : req.query.up_menu_no == undefined? '0':req.query.up_menu_no, 
+        //         menu_gb : req.query.menu_gb == undefined? 'ADMIN':req.query.menu_gb,
+        //     },
+        //     order: [['ORD', 'ASC']],
+        //     // pagination
+        //     offset: offset,
+        //     limit: 10
+        // });
+        const menus = await conn.execute(`
+                SELECT A.*
+                from (
+                    SELECT A.*
+                    FROM (  	 
+                        SELECT A.*, rownum as pagingrow
+                        FROM (	
+                            SELECT A.*
+                            FROM TB_MENU A  
+                            WHERE 1=1
+                            AND A.UP_MENU_NO = ${req.query.up_menu_no == undefined? '0':req.query.up_menu_no}
+                            AND A.MENU_GB    = ${req.query.menu_gb == undefined? 'ADMIN':req.query.menu_gb}
+                            ORDER BY ORD DESC
+                        ) A	
+                    where rownum <= ${req.query.page_end ? req.query.page_end : 10}
+                ) A		
+                where 	pagingrow >= ${req.query.page_start ? req.query.page_start : 1}
+                ) A
+        `);
         res.render('boffice/menu/menuList', {
             title: '관리자 - 메뉴관리',
             querys: req.query,

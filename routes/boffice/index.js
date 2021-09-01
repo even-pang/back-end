@@ -19,7 +19,7 @@ router.use('/', async (req,res,next) => {
     try {
         conn = await oracledb.getConnection(dbConfig);
         const menus = await conn.execute(menuList);
-        const menuDetail = await conn.execute("select * from tb_menu where menu_no = 22");
+        const menuDetail = await conn.execute(`select * from tb_menu where menu_no = ${req.query.menu_no ? req.query.menu_no : 22}`);
         console.log(menus);
         res.app.set('menuList',menus);
         res.app.set('menuDetail',menuDetail);

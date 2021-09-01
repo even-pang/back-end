@@ -1,7 +1,6 @@
 const express = require('express');
 const oracledb = require('oracledb');
-const dbconfig = require('../../db/dbconfig');
-const conn = oracledb.getConnection(dbconfig);
+const dbConfig = require('../../db/dbconfig');
 const multer = require('multer');
 const router = express.Router();
 const paging = require('./adminPaging');
@@ -18,15 +17,30 @@ router.route('/boardMgrList')
             offset = 10 * (pageNum - 1);
         }
 
-        const boardMgr = await Boardmgr.findAndCountAll({
-            where : {
-                //up_menu_no : req.query.up_menu_no == undefined? '0':req.query.up_menu_no, 
-                //menu_gb : req.query.menu_gb == undefined? 'ADMIN':req.query.menu_gb,
-            },
-            order: [['brd_mgrno', 'ASC']],
-            offset: offset,
-            limit: 10
-        });
+        // const boardMgr = await Boardmgr.findAndCountAll({
+        //     where : {
+        //         //up_menu_no : req.query.up_menu_no == undefined? '0':req.query.up_menu_no, 
+        //         //menu_gb : req.query.menu_gb == undefined? 'ADMIN':req.query.menu_gb,
+        //     },
+        //     order: [['brd_mgrno', 'ASC']],
+        //     offset: offset,
+        //     limit: 10
+        // });
+        const boardMgr = await conn.execute(`
+                SELECT A.*
+                from (
+                    SELECT A.*
+                    FROM (  	 
+                        SELECT A.*, rownum as pagingrow
+                        FROM (	
+                            SELECT  /*+index(A IDX_BOARD_01)*/ A.*
+                            FROM TB_BOARDMGR A  
+                        ) A	
+                    where rownum <= ${req.query.page_end ? req.query.page_end : 10}
+                ) A		
+                where 	pagingrow >= ${req.query.page_start ? req.query.page_start : 1}
+                ) A
+        `);
         res.render('boffice/boardmgr/boardMgrList', {
             title: '관리자 - 게시판관리',
             querys: req.query,
@@ -49,7 +63,9 @@ router.route('/boardMgrList')
 router.route('/boardMgrWrite')
 .post(async (req,res,next) => {
     try {
-        const boardMgrDetail = await Boardmgr.findOne({where:{brd_mgrno: req.body.brd_mgrno}});
+        conn = await oracledb.getConnection(dbConfig);
+        //const boardMgrDetail = await Boardmgr.findOne({where:{brd_mgrno: req.body.brd_mgrno}});
+        const boardMgrDetail = await conn.execute(`select * from tb_boardmgr where brd_mgrno = ${req.body.brd_mgrno}`);
         let iflag = 'INSERT';
         if(boardMgrDetail) iflag = 'UPDATE'; 
         res.render('boffice/boardmgr/boardMgrWrite', {

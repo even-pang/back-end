@@ -9,7 +9,6 @@
             var targetUrl = "/boffice/member/memberWork";
             let type = 'POST';
             if('{{iflag}}' == 'UPDATE') type = 'PATCH';
-
             $.ajax(
                 {
                     url:targetUrl,
@@ -27,7 +26,6 @@
                 }	
             );
         }   
-
     </script>
 
     <div class="body">
@@ -58,7 +56,6 @@
                         <th >전화번호</th>
                             <td ><input type="text" style="width:700px" name="telno" class="input-text" value="{{detail.telno}}" maxlength="50"/></td>
                     </tr>
-
                      <tr>
                         <th >성별</th>
                             <td >
