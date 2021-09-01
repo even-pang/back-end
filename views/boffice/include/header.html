@@ -44,7 +44,6 @@
             ,maxDate: "+1M" //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)                
         });
     })
-
 </script>
 <body> 
     <div class="logoDiv w_show">
@@ -55,7 +54,7 @@
 			<h2>ALL CATEGORIES</h2>
 			<ul>
                 {% set now_lvl = 1 %}
-                {% for item in menuList[0] %}
+                {% for item in menuList.rows %}
                     {% if item.MENU_LVL == now_lvl-1%}
                         </ul></div></li>
                     {% endif %}
@@ -112,7 +111,7 @@
     <div class="m_menu m_show">
         <ul id="m_menu_ul">
             {% set now_lvl = 1 %}
-                {% for item in menuList[0] %}
+                {% for item in menuList.rows %}
                     {% if item.MENU_LVL == now_lvl-1 %}
                             </ul>
                         </li>
