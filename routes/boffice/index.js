@@ -23,7 +23,6 @@ router.use('/', async (req,res,next) => {
         console.log(menus);
         res.app.set('menuList',menus);
         res.app.set('menuDetail',menuDetail);
-        
         next();
     } catch (error) {
         console.log(error);

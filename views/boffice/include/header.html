@@ -60,19 +60,19 @@
                     {% endif %}
                     {% switch item.MENU_LVL %}   
                         {% case 1 %}
-                            {% if item.child_cnt == 0 %}
-                                <li class="ico_leftArrow {%if item.MENU_NO == menuDetail.menu_no%}active{%endif%}"><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'><span>{{ item.MENU_NM }}</span></a></li>
+                            {% if item.CHILD_CNT == 0 %}
+                                <li class="ico_leftArrow {%if item.MENU_NO == menuDetail.MENU_NO%}active{%endif%}"><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'><span>{{ item.MENU_NM }}</span></a></li>
                             {% else %}
-                                <li class="ico_leftArrow mainMenu {%if item.MENU_NO == menuDetail.top_menu_no%}active{%endif%}">
+                                <li class="ico_leftArrow mainMenu {%if item.MENU_NO == menuDetail.TOP_MENU_NO%}active{%endif%}">
                                     <a href="javascript:void(0);"><span>{{ item.MENU_NM }}</span></a>
-                                    <div class="menu {%if item.MENU_NO == menuDetail.top_menu_no%}on{%endif%}">
+                                    <div class="menu {%if item.MENU_NO == menuDetail.TOP_MENU_NO%}on{%endif%}">
                                         <h2>{{ item.MENU_NM }}</h2>
                                         <a class="back" href="javascript:void(0);">뒤로가기</a>
                                         <ul>
                             {% endif %}
                         {% case 2 %}
-                            {% if item.child_cnt == 0 %}
-                                <li class="ico_leftArrow {%if item.MENU_NO == menuDetail.menu_no%}active{%endif%}"><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'><span>{{ item.MENU_NM }}</span></a></li>
+                            {% if item.CHILD_CNT == 0 %}
+                                <li class="ico_leftArrow {%if item.MENU_NO == menuDetail.MENU_NO%}active{%endif%}"><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'><span>{{ item.MENU_NM }}</span></a></li>
                             {% else %}
                                 <li class="ico_leftArrow mainMenu {%if item.MENU_NO == menuDetail.up_menu_no%}active{%endif%}">
                                     <a href="javascript:void(0);"><span>{{ item.MENU_NM }}</span></a>
@@ -82,9 +82,9 @@
                                         <ul>
                             {% endif %}
                         {% case 3 %}
-                        <li class="ico_leftArrow {%if item.MENU_NO == menuDetail.menu_no%}active{%endif%}"><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'><span>{{ item.MENU_NM }}</span></a></li>
+                        <li class="ico_leftArrow {%if item.MENU_NO == menuDetail.MENU_NO%}active{%endif%}"><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'><span>{{ item.MENU_NM }}</span></a></li>
                         {% default %}
-                        <li class="ico_leftArrow {%if item.MENU_NO == menuDetail.menu_no%}active{%endif%}"><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'><span>{{ item.MENU_NM }}</span></a></li>
+                        <li class="ico_leftArrow {%if item.MENU_NO == menuDetail.MENU_NO%}active{%endif%}"><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'><span>{{ item.MENU_NM }}</span></a></li>
                     {% endswitch %}
                     {% set now_lvl = item.MENU_LVL %}
                     {%if loop.last and item.MENU_LVL > 1%}
@@ -118,15 +118,15 @@
                     {% endif %}
                     {% switch item.MENU_LVL %}   
                         {% case 1 %}
-                            {% if item.child_cnt == 0 %}
-                                <li class="m_main_menu {%if item.MENU_NO == menuDetail.menu_no%}m_menu_on{%endif%}"><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'>{{ item.MENU_NM }}</a></li>
+                            {% if item.CHILD_CNT == 0 %}
+                                <li class="m_main_menu {%if item.MENU_NO == menuDetail.MENU_NO%}m_menu_on{%endif%}"><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'>{{ item.MENU_NM }}</a></li>
                             {% else %}
-                                <li class="m_main_menu {%if item.MENU_NO == menuDetail.top_menu_no%}m_menu_on{%endif%}">
+                                <li class="m_main_menu {%if item.MENU_NO == menuDetail.TOP_MENU_NO%}m_menu_on{%endif%}">
                                     <a href="#" class="">{{ item.MENU_NM }}</a>
                                     <ul class="m_sub_menu" style="display: none;">
                             {% endif %}
                         {% case 2 %}
-                            {% if item.child_cnt == 0 %}
+                            {% if item.CHILD_CNT == 0 %}
                                 <li><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'>{{ item.MENU_NM }}</a></li>
                             {% else %}
                                 <li class="m_main_menu {%if item.MENU_NO == menuDetail.up_menu_no%}m_menu_on{%endif%}">
@@ -134,9 +134,9 @@
                                     <ul class="m_sub_menu" style="display: none;">
                             {% endif %}
                         {% case 3 %}
-                        <li class="{%if item.MENU_NO == menuDetail.menu_no%}m_menu_on{%endif%}"><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'>{{ item.MENU_NM }}</a></li>
+                        <li class="{%if item.MENU_NO == menuDetail.MENU_NO%}m_menu_on{%endif%}"><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'>{{ item.MENU_NM }}</a></li>
                         {% default %}
-                        <li class="{%if item.MENU_NO == menuDetail.menu_no%}m_menu_on{%endif%}"><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'>{{ item.MENU_NM }}</a></li>
+                        <li class="{%if item.MENU_NO == menuDetail.MENU_NO%}m_menu_on{%endif%}"><a href='javascript:getMenuUrl( "{{item.MENU_URL}}" ,{{item.BRD_MGRNO}}, {{item.MENU_NO}})'>{{ item.MENU_NM }}</a></li>
                     {% endswitch %}
                     {% set now_lvl = item.MENU_LVL %}
                 {% endfor %}
