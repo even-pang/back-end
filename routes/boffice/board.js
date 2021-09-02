@@ -193,40 +193,6 @@ router.route('/boardWork')
                 ${moment().add('9', 'h').format('YYYY-MM-DD HH:mm:ss')},
                 null
             )`);
-            // await Board.create({
-            //     brd_kind: req.body.brd_kind,
-            //     cate_cd: req.body.cate_cd,
-            //     notice_yn: req.body.notice_yn,
-            //     use_yn: req.body.use_yn,
-            //     ttl: req.body.ttl,
-            //     ctnt: req.body.ctnt,
-            //     high_reg_no: req.body.high_reg_no,
-            //     depth: req.body.depth,
-            //     all_reg_no: req.body.all_reg_no,
-            //     top_reg_no: req.body.top_reg_no,
-            //     view_cnt: req.body.view_cnt,
-            //     reg_id: req.user.user_id,
-            //     reg_nm: req.user.user_nm,
-            //     sdt: req.body.sdt,
-            //     edt: req.body.edt,
-            //     url: req.body.url,
-            //     brd_mgrno: req.body.brd_mgrno,
-            //     secret_yn: req.body.secret_yn,
-            //     zip_cd: req.body.zip_cd,
-            //     email: req.body.email,
-            //     delflag_yn: req.body.delflag_yn,
-            //     win_height: req.body.win_height,
-            //     win_width: req.body.win_width,
-            //     etc_field1: req.body.etc_field1,
-            //     etc_field2: req.body.etc_field2,
-            //     etc_field3: req.body.etc_field3,
-            //     etc_field4: req.body.etc_field4,
-            //     url_target: req.body.url_target,
-            //     site_gb: req.body.site_gb,
-            //     ord: req.body.ord,
-            //     reg_dt: moment().add('9', 'h').format('YYYY-MM-DD HH:mm:ss'),
-            //     mod_dt: null,
-            // });
             res.send('저장되었습니다');
         } catch (error) {
             console.error(error);
@@ -236,36 +202,7 @@ router.route('/boardWork')
     .patch(async (req, res, next) => {
         try {
             conn = await oracledb.getConnection(dbConfig);
-            //boardDetail = await Board.findOne({ where: { brd_no: req.body.brd_no } });
             boardDetail = await conn.execute(`select * from tb_board where brd_no = ${req.body.brd_no}}`);
-            // const result = await Board.update({
-            //     brd_kind: req.body.brd_kind,
-            //     cate_cd: req.body.cate_cd,
-            //     notice_yn: req.body.notice_yn,
-            //     use_yn: req.body.use_yn,
-            //     ttl: req.body.ttl,
-            //     ctnt: req.body.ctnt,
-            //     depth: req.body.depth,
-            //     sdt: req.body.sdt,
-            //     edt: req.body.edt,
-            //     url: req.body.url,
-            //     secret_yn: req.body.secret_yn,
-            //     zip_cd: req.body.zip_cd,
-            //     email: req.body.email,
-            //     delflag_yn: req.body.delflag_yn,
-            //     win_height: req.body.win_height,
-            //     win_width: req.body.win_width,
-            //     etc_field1: req.body.etc_field1,
-            //     etc_field2: req.body.etc_field2,
-            //     etc_field3: req.body.etc_field3,
-            //     etc_field4: req.body.etc_field4,
-            //     url_target: req.body.url_target,
-            //     site_gb: req.body.site_gb,
-            //     ord: req.body.ord,
-            //     mod_dt: moment().add('9', 'h').format('YYYY-MM-DD HH:mm:ss'),
-            // }, {
-            //     where: { brd_no: req.body.brd_no },
-            // });
             conn.execute(`UPDATE TB_BOARD SET 
                 brd_kind= ${req.body.brd_kind},
                 cate_cd= ${req.body.cate_cd},
@@ -298,6 +235,7 @@ router.route('/boardWork')
             next(error);
         }
     })
+
     .delete(async (req, res, next) => {
         try {
             conn = await oracledb.getConnection(dbConfig);

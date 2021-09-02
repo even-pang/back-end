@@ -69,11 +69,14 @@ router.route('/menuList')
 router.route('/menuWrite')
 .post(async (req,res,next) => {
     try {
-        const menuDetail = await Menu.findOne({where:{menu_no: req.body.menu_no}});
-        const boardMgrList = await Boardmgr.findAll({
-            attributes: ['brd_mgrno', 'brd_nm'], 
-            where: {use_yn : 'Y'},
-        });
+        conn = await oracledb.getConnection(dbConfig);
+        // const menuDetail = await Menu.findOne({where:{menu_no: req.body.menu_no}});
+        // const boardMgrList = await Boardmgr.findAll({
+        //     attributes: ['brd_mgrno', 'brd_nm'], 
+        //     where: {use_yn : 'Y'},
+        // });
+        const menuDetail = await conn.execute(`select * from tb_menu where menu_no = ${req.body.menu_no}`);
+        const boardMgrDetail = await conn.execute(`select brd_mgrno, brd_nm from tb_boardmgr where use_yn = 'Y'`);
         let iflag = 'INSERT';
         if(menuDetail) iflag = 'UPDATE';
         res.render('boffice/menu/menuWrite', {
